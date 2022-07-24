@@ -1,0 +1,38 @@
+<div class="post-create">
+  <form [formGroup]="postCreateForm">
+    <!-- <label for="title"></label>
+    <input type="text" id="title" placeholder="Title" formControlName="title" /> -->
+    <mat-form-field appearance="fill">
+      <mat-label>Post title</mat-label>
+      <input matInput placeholder="Title" formControlName="title">
+    </mat-form-field>
+
+    <!-- <label for="text"></label>
+    <textarea id="text" placeholder="Text"></textarea> -->
+
+    <mat-form-field appearance="fill">
+      <mat-label>Post text</mat-label>
+      <textarea matInput placeholder="Text (optional)" formControlName="text"></textarea>
+    </mat-form-field>
+
+    <div formArrayName="postImages">
+      <div *ngFor="let postImage of postImages.controls; let i = index">
+        <div [formGroupName]="i" class="image-group">
+          <mat-form-field appearance="fill">
+            <mat-label>Image title</mat-label>
+            <input matInput placeholder="Image title" formControlName="title" (change)="imageChanged()">
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Image URL</mat-label>
+            <input matInput placeholder="Title" formControlName="url" (change)="imageChanged()">
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button mat-raised-button color="primary" (click)="createPost()">Create post</button>
+      <button mat-button color="primary">Cancel</button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,7 @@
+.post-list>* {
+  background-color: var(--frontground-color);
+}
+
+.post-list>app-post {
+  background-color: var(--frontground-back-color);
+}

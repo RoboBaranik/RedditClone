@@ -1,0 +1,12 @@
+.wall-sidebar {
+  background-color: #FFF;
+  margin-bottom: 20px;
+  padding: 5px;
+  border-radius: 5px;
+  height: 500px;
+}
+
+.wall-sidebar>* {
+  margin: 0;
+  padding: 0;
+}

@@ -1,1 +1,72 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --font-size: 12px;
+  --font-size-post-metadata: 11px;
+  --background-color: #DDD;
+  --frontground-color: #FFF;
+  --frontground-back-color: #EEE;
+  --frontground-inv-color: #000;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  display: block;
+  height: 100%;
+  background-color: var(--background-color);
+  font-size: var(--font-size);
+  font-family: Roboto, sans-serif;
+  font-weight: 400;
+}
+
+img {
+  display: block;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* label {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  text-transform: uppercase;
+  display: block;
+} */
+
+/* input,
+textarea {
+  margin-top: calc(var(--font-size) + 4px);
+  font-family: Roboto, sans-serif;
+  font-weight: 400;
+  border-radius: 0;
+  border: 1px solid var(--background-color);
+}
+
+input:focus-visible,
+textarea:focus-visible {
+  border: 1px solid var(--frontground-inv-color);
+  outline: none;
+}
+
+textarea {
+  resize: none;
+} */
+
+/* button {
+  font-family: Roboto, sans-serif;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1.25px;
+  border-radius: 0;
+} */
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

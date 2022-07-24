@@ -1,0 +1,112 @@
+.post {
+  --border-radius: 5px;
+  --upvote-bar-width: 36px;
+  --post-max-height: 150px;
+
+  margin-bottom: 15px;
+  border-radius: var(--border-radius);
+  background-color: var(--frontground-back-color);
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  position: relative;
+}
+
+.upvote-bar {
+  width: var(--upvote-bar-width);
+  background-color: var(--frontground-back-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: absolute;
+  /* border-radius: var(--border-radius) 0 0 0; */
+  top: var(--border-radius);
+}
+
+mat-icon {
+  width: 24px !important;
+  height: 24px !important;
+  font-size: 24px !important;
+  /* background-color: red; */
+}
+
+.mat-icon-button {
+  width: 24px;
+  height: 24px;
+  line-height: 0;
+}
+
+#votes {
+  width: var(--upvote-bar-width);
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  font-size: var(--font-size);
+  font-weight: 700;
+}
+
+.content {
+  margin-left: var(--upvote-bar-width);
+  background-color: var(--frontground-color);
+  width: calc(100% - var(--upvote-bar-width));
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  padding: var(--border-radius) var(--border-radius) 0 var(--border-radius);
+}
+
+.metadata {
+  font-size: var(--font-size-post-metadata);
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.metadata>* {
+  margin-right: 4px;
+}
+
+.post-text {
+  white-space: pre-line;
+  max-height: var(--post-max-height);
+  overflow: hidden;
+  display: inline-block;
+  position: relative;
+}
+
+.post-text::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) calc(var(--post-max-height) * (2/3)), rgb(255, 255, 255) calc(var(--post-max-height) - 5px));
+}
+
+.post-image {
+  width: 100%;
+  max-height: calc(3 * var(--post-max-height));
+  object-fit: contain;
+}
+
+.post-image-title {
+  padding: 4px 8px;
+  background-color: var(--frontground-back-color);
+  text-align: right;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.sub-image {
+  width: calc(1.75 * var(--font-size-post-metadata));
+  height: calc(1.75 * var(--font-size-post-metadata));
+  background-color: black;
+  border-radius: 100%;
+}
+
+.footer {
+  padding: calc(var(--border-radius) / 2) 0;
+}

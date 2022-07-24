@@ -1,0 +1,25 @@
+.post-create {
+  background-color: #FFF;
+  margin-bottom: 20px;
+  padding: 16px;
+  border-radius: 5px;
+  display: block;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+textarea {
+  max-height: 500px;
+}
+
+.image-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+.image-group mat-form-field {
+  width: 45%;
+}
