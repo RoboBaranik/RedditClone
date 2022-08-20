@@ -3,9 +3,11 @@
   --font-size: 12px;
   --font-size-post-metadata: 11px;
   --background-color: #DDD;
+  --background-dark-color: #CCC;
   --frontground-color: #FFF;
   --frontground-back-color: #EEE;
-  --frontground-inv-color: #000;
+  --frontground-text-color: #000;
+  --frontground-text-secondary-color: #777;
 }
 
 html,
@@ -26,6 +28,15 @@ img {
 
 * {
   box-sizing: border-box;
+}
+
+a {
+  text-decoration: inherit;
+  color: inherit;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 /* label {

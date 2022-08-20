@@ -4,6 +4,7 @@
   padding: 16px;
   border-radius: 5px;
   display: block;
+  border: 1px solid var(--background-dark-color);
 }
 
 form {
@@ -22,4 +23,8 @@ textarea {
 
 .image-group mat-form-field {
   width: 45%;
+}
+
+.buttons button {
+  margin-right: 8px;
 }

@@ -17,6 +17,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { HttpClientModule } from '@angular/common/http';
+import { AppRoutingModule } from './app-routing.module';
+import { PostDetailComponent } from './content/post-detail/post-detail.component';
+import { MainPageComponent } from './content/main-page/main-page.component';
+import { SubredditComponent } from './content/subreddit/subreddit.component';
 
 @NgModule({
   declarations: [
@@ -28,11 +32,15 @@ import { HttpClientModule } from '@angular/common/http';
     PostComponent,
     WallSidebarComponent,
     PostCreateComponent,
-    PostFilterComponent
+    PostFilterComponent,
+    PostDetailComponent,
+    MainPageComponent,
+    SubredditComponent
   ],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
+    AppRoutingModule,
     BrowserAnimationsModule,
     MatSliderModule,
     MatButtonModule,

@@ -12,19 +12,22 @@ export class UserService implements OnInit {
     ];
   }
 
-  user: Nullable<User> = null;
+  _user: User | undefined = undefined;
   userUpdated: Subject<User> = new Subject<User>();
   users: User[] = [];
 
   login(username: string, password: string) {
     var user = this.users.find(user => user.name.localeCompare(username) === 0 && user.password.localeCompare(password) === 0);
     if (user) {
-      this.user = user;
-      this.userUpdated.next(this.user);
+      this._user = user;
+      this.userUpdated.next(this._user);
     }
   }
+  get user(): User | undefined {
+    return this._user;
+  }
   logout() {
-    this.user = null;
+    this._user = undefined;
   }
 
 }

@@ -35,7 +35,11 @@ export class PostCreateComponent implements OnInit {
   }
 
   createPost() {
-    this.postService.createPost(this.postCreateForm.value['title'], this.postCreateForm.value['text']);
+    try {
+      this.postService.createPost(this.postCreateForm.value['title'], this.postCreateForm.value['text']);
+    } catch (error) {
+      this.postCreateForm.reset();
+    }
     console.log(this.postService.getPostAll());
   }
   imageChanged() {

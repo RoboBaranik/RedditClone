@@ -1,4 +1,4 @@
-<div class="post">
+<div class="post" (click)="postClicked($event)" (mousedown)="postMouseDown($event)">
   <div class="upvote-bar">
     <button mat-icon-button>
       <mat-icon class="upvote" svgIcon="arrow_up" [inline]="true" [color]="'primary'"></mat-icon>
@@ -14,9 +14,9 @@
   <div class="content">
     <div class="metadata">
       <a class="sub-image"></a>
-      <a class="sub-name">/r/Reddit</a>
+      <a class="sub-name" [routerLink]="'/'+post.subreddit">{{post.subreddit}}</a>
       <span>|</span>
-      <span>Posted by <a>/u/Author</a></span>
+      <span>Posted by <a [routerLink]="'/'+post.author">{{post.author}}</a></span>
       <span>5 min ago</span>
     </div>
     <div>
@@ -30,7 +30,7 @@
       <div class="post-image-title">{{post.images[0].title}}</div>
     </div>
     <div class="footer">
-      <button mat-button>0 Comments</button>
+      <button mat-button (click)="navigateToDetails()">0 Comments</button>
       <button mat-button disabled>Award</button>
       <button mat-button disabled>Share</button>
       <button mat-button disabled>Save</button>
