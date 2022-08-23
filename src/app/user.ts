@@ -1,13 +1,8 @@
 export class User {
-  name: string;
-  password: string;
-  avatarUrl: string;
-  karma: number;
+  constructor(public name: string, private _password: string, public avatarUrl: string, public karma: number) {
+  }
 
-  constructor(name: string, password: string, avatarUrl: string, karma: number) {
-    this.name = name;
-    this.password = password;
-    this.avatarUrl = avatarUrl;
-    this.karma = karma;
+  isPasswordCorrect(givenPassword: string): boolean {
+    return this._password.localeCompare(givenPassword) === 0;
   }
 }

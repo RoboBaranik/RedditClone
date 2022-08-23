@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { UserService } from "src/app/user.service";
+import { Comment } from "./comment";
 import { Post } from "./post";
 import { PostImage } from "./post-image";
 
@@ -36,8 +37,11 @@ export class PostService {
     this.postListSub.next(this.postList);
     return newPost;
   }
-  getPost(id: number) {
+  getPostByListIndex(id: number) {
     return this.postList[id];
+  }
+  getPost(postId: string, postTitleUrl: string) {
+    return this.postList.find(post => post.id === postId && post.titleUrl.localeCompare(postTitleUrl) === 0);
   }
   getPostAll() {
     return this.postList.slice();
@@ -48,6 +52,13 @@ export class PostService {
   }
   deletePost(id: number) {
     this.postList.splice(id, 1);
+    this.postListSub.next(this.postList);
+  }
+  addComment(post: Post, comment: Comment) {
+    var foundPost = this.getPost(post.id, post.titleUrl);
+    if (foundPost) {
+      foundPost.addComment(comment);
+    }
     this.postListSub.next(this.postList);
   }
 

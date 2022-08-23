@@ -1,10 +1,6 @@
 .post-create {
-  background-color: #FFF;
   margin-bottom: 20px;
   padding: 16px;
-  border-radius: 5px;
-  display: block;
-  border: 1px solid var(--background-dark-color);
 }
 
 form {

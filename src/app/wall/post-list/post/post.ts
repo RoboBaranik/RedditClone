@@ -1,4 +1,5 @@
 import { PostImage } from "./post-image";
+import { Comment } from "./comment";
 
 export class Post {
 
@@ -7,6 +8,7 @@ export class Post {
   public downvotes: number;
   public id: string;
   public titleUrl: string = '';
+  public comments: Comment[] = [];
 
   constructor(
     public subreddit: string,
@@ -23,6 +25,10 @@ export class Post {
     } else {
       this.titleUrl = optional.titleUrl;
     }
+  }
+
+  addComment(comment: Comment) {
+    this.comments.push(comment);
   }
 
   generateId(): string {

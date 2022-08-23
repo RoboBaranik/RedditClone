@@ -21,6 +21,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { PostDetailLayoutComponent } from './content/post-detail-layout/post-detail-layout.component';
 import { MainPageLayoutComponent } from './content/main-page-layout/main-page-layout.component';
 import { SubredditLayoutComponent } from './content/subreddit-layout/subreddit-layout.component';
+import { PostDetailComponent } from './wall/post-detail/post-detail.component';
+import { CommentComponent } from './wall/comment/comment.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,9 @@ import { SubredditLayoutComponent } from './content/subreddit-layout/subreddit-l
     PostFilterComponent,
     PostDetailLayoutComponent,
     MainPageLayoutComponent,
-    SubredditLayoutComponent
+    SubredditLayoutComponent,
+    PostDetailComponent,
+    CommentComponent
   ],
   imports: [
     BrowserModule,

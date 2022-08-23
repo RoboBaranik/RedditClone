@@ -1,29 +1,14 @@
-.post {
-  --post-max-height: 150px;
-
-  margin-bottom: 15px;
-  border-radius: var(--border-radius);
-  background-color: var(--frontground-back-color);
-  border: 1px solid var(--background-dark-color);
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: flex-start;
+.post-detail {
   position: relative;
 }
 
-.post {
-  cursor: pointer;
-}
-
-.post span,
-.post h2 {
+.post-detail span,
+.post-detail h2 {
   cursor: initial;
 }
 
 .upvote-bar {
   width: var(--upvote-bar-width);
-  background-color: var(--frontground-back-color);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -119,8 +104,4 @@ mat-icon {
 .sub-name {
   font-weight: var(--fw-medium);
   color: var(--frontground-text-color);
-}
-
-.footer {
-  padding: calc(var(--border-radius) / 2) 0;
 }

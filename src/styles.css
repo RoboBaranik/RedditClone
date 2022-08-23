@@ -2,6 +2,8 @@
 :root {
   --font-size: 12px;
   --font-size-post-metadata: 11px;
+  --border-radius: 5px;
+  --upvote-bar-width: 36px;
   --background-color: #DDD;
   --background-dark-color: #CCC;
   --frontground-color: #FFF;
@@ -37,6 +39,14 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+.container {
+  background-color: var(--frontground-color);
+  background-color: #FFF;
+  border-radius: 5px;
+  display: block;
+  border: 1px solid var(--background-dark-color);
 }
 
 /* label {

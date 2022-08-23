@@ -1,7 +1,4 @@
 .post-filter {
-  background-color: #FFF;
   margin-bottom: 20px;
   padding: 5px;
-  border-radius: 5px;
-  border: 1px solid var(--background-dark-color);
 }

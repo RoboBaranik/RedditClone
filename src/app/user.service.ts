@@ -17,7 +17,7 @@ export class UserService implements OnInit {
   users: User[] = [];
 
   login(username: string, password: string) {
-    var user = this.users.find(user => user.name.localeCompare(username) === 0 && user.password.localeCompare(password) === 0);
+    var user = this.users.find(user => user.name.localeCompare(username) === 0 && user.isPasswordCorrect(password));
     if (user) {
       this._user = user;
       this.userUpdated.next(this._user);
