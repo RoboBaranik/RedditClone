@@ -18,9 +18,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
-import { PostDetailComponent } from './content/post-detail/post-detail.component';
-import { MainPageComponent } from './content/main-page/main-page.component';
-import { SubredditComponent } from './content/subreddit/subreddit.component';
+import { PostDetailLayoutComponent } from './content/post-detail-layout/post-detail-layout.component';
+import { MainPageLayoutComponent } from './content/main-page-layout/main-page-layout.component';
+import { SubredditLayoutComponent } from './content/subreddit-layout/subreddit-layout.component';
 
 @NgModule({
   declarations: [
@@ -33,9 +33,9 @@ import { SubredditComponent } from './content/subreddit/subreddit.component';
     WallSidebarComponent,
     PostCreateComponent,
     PostFilterComponent,
-    PostDetailComponent,
-    MainPageComponent,
-    SubredditComponent
+    PostDetailLayoutComponent,
+    MainPageLayoutComponent,
+    SubredditLayoutComponent
   ],
   imports: [
     BrowserModule,

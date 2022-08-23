@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SubredditComponent } from './subreddit.component';
+import { SubredditLayoutComponent } from './subreddit-layout.component';
 
 describe('SubredditComponent', () => {
-  let component: SubredditComponent;
-  let fixture: ComponentFixture<SubredditComponent>;
+  let component: SubredditLayoutComponent;
+  let fixture: ComponentFixture<SubredditLayoutComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SubredditComponent ]
+      declarations: [SubredditLayoutComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SubredditComponent);
+    fixture = TestBed.createComponent(SubredditLayoutComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

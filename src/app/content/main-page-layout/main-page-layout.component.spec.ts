@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PostDetailComponent } from './post-detail.component';
+import { MainPageLayoutComponent } from './main-page-layout.component';
 
-describe('ContentComponent', () => {
-  let component: PostDetailComponent;
-  let fixture: ComponentFixture<PostDetailComponent>;
+describe('MainPageComponent', () => {
+  let component: MainPageLayoutComponent;
+  let fixture: ComponentFixture<MainPageLayoutComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PostDetailComponent]
+      declarations: [MainPageLayoutComponent]
     })
       .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PostDetailComponent);
+    fixture = TestBed.createComponent(MainPageLayoutComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

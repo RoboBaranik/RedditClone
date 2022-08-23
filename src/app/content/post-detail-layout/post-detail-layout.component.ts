@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
 
 @Component({
-  selector: 'post-detail',
-  templateUrl: './post-detail.component.html',
-  styleUrls: ['./post-detail.component.css']
+  selector: 'post-detail-layout',
+  templateUrl: './post-detail-layout.component.html',
+  styleUrls: ['./post-detail-layout.component.css']
 })
-export class PostDetailComponent implements OnInit {
+export class PostDetailLayoutComponent implements OnInit {
   /* type: ContentType = ContentType.Reddit;
   name: String = ''; */
 

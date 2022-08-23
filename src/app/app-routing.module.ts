@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
-import { MainPageComponent } from './content/main-page/main-page.component';
-import { PostDetailComponent } from './content/post-detail/post-detail.component';
-import { SubredditComponent } from './content/subreddit/subreddit.component';
+import { MainPageLayoutComponent } from './content/main-page-layout/main-page-layout.component';
+import { PostDetailLayoutComponent } from './content/post-detail-layout/post-detail-layout.component';
+import { SubredditLayoutComponent } from './content/subreddit-layout/subreddit-layout.component';
 
 const routes: Routes = [
-  { path: 'r/:name/:postid/:posttitle', component: PostDetailComponent },
-  { path: 'r/:name', component: SubredditComponent },
-  { path: 'u/:name', component: MainPageComponent },
-  { path: '', component: MainPageComponent, pathMatch: 'full' }//,
+  { path: 'r/:name/:postid/:posttitle', component: PostDetailLayoutComponent },
+  { path: 'r/:name', component: SubredditLayoutComponent },
+  { path: 'u/:name', component: MainPageLayoutComponent },
+  { path: '', component: MainPageLayoutComponent, pathMatch: 'full' }//,
   // { path: '**', component: ContentComponent }
 ];
 
