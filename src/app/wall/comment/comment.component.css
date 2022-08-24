@@ -1,0 +1,70 @@
+.comment {
+  --avatar-and-name-spacing: 8px;
+  --divider-width: 2px;
+  font-size: var(--font-size-comment-metadata);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.body {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.content::before {
+  content: "";
+  position: absolute;
+  width: var(--divider-width);
+  background-color: var(--background-color);
+  height: calc(100% - 2* var(--avatar-and-name-spacing));
+  left: calc(-1* var(--font-size-comment-metadata) - var(--avatar-and-name-spacing) - var(--divider-width)/2);
+  top: var(--avatar-and-name-spacing);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  position: relative;
+  margin-left: calc(2 * var(--font-size-comment-metadata) + var(--avatar-and-name-spacing));
+  width: calc(100% - 4 * var(--font-size-comment-metadata) - var(--avatar-and-name-spacing));
+}
+
+.author-avatar {
+  width: calc(2 * var(--font-size-comment-metadata));
+  height: calc(2 * var(--font-size-comment-metadata));
+  border-radius: 100%;
+  margin-right: var(--avatar-and-name-spacing);
+}
+
+.header-empty .author-avatar {
+  background-color: var(--background-color);
+}
+
+a.header-empty:hover {
+  cursor: initial;
+  text-decoration: none;
+}
+
+.author-name {
+  font-weight: var(--fw-medium);
+}
+
+a {
+  cursor: pointer;
+}
+
+comment {
+  width: 100%;
+}

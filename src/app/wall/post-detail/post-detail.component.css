@@ -105,3 +105,7 @@ mat-icon {
   font-weight: var(--fw-medium);
   color: var(--frontground-text-color);
 }
+
+.comments {
+  padding: calc(2 * var(--border-radius));
+}

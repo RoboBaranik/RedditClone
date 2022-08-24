@@ -14,7 +14,7 @@ export class PostService {
   constructor(private userService: UserService) {
     this.postList.push(
       new Post('r/Reddit', 'u/redditor', 'A nice title for a post', 'This is a description of a post. Should be clear enough. :)'),
-      new Post('r/leagueoflegends', 'u/someone', 'Hmm, what is this?', '', { images: [new PostImage('https://preview.redd.it/runidc8ephd91.jpg?width=1080&format=pjpg&auto=webp&s=b570cbaebcad4d7dc4bf4e4d5e6a546d438db965', 'What')] }),
+      new Post('r/leagueoflegends', 'u/someone', 'Hmm, what is this?', '', { images: [new PostImage('https://i.redd.it/i43jvn2ymjj91.jpg', 'What')] }),
       new Post('r/Important', 'u/yasuoplayer', 'What?', 'Ahh yes, I almost forgot. This is really important description of my post. Never delete it. Please :)'),
       new Post('r/Test', 'u/loremipsumman', 'A loong post', `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus vehicula venenatis erat, rutrum consequat dolor bibendum et. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce interdum erat at odio bibendum fringilla. Mauris suscipit lacinia turpis, sit amet porttitor felis semper sed. Cras fringilla vulputate ultrices. Cras ac viverra mauris. Donec a tincidunt nulla, vel mattis enim.
       

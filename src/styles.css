@@ -2,6 +2,7 @@
 :root {
   --font-size: 12px;
   --font-size-post-metadata: 11px;
+  --font-size-comment-metadata: 14px;
   --border-radius: 5px;
   --upvote-bar-width: 36px;
   --background-color: #DDD;
@@ -31,6 +32,15 @@ img {
 * {
   box-sizing: border-box;
 }
+
+/* app-root,
+post-detail-layout,
+post-detail-layout div.wall,
+post-detail,
+post-detail div.post-detail,
+post-detail .comments {
+  height: 100%;
+} */
 
 a {
   text-decoration: inherit;

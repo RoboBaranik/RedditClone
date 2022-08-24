@@ -16,8 +16,7 @@
   cursor: pointer;
 }
 
-.post span,
-.post h2 {
+.post span {
   cursor: initial;
 }
 

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { User } from 'src/app/user';
+import { UserService } from 'src/app/user.service';
 import { Comment } from '../post-list/post/comment';
 import { Post } from '../post-list/post/post';
 import { PostService } from '../post-list/post/post.service';
@@ -14,7 +15,11 @@ export class PostDetailComponent implements OnInit {
 
   post!: Post;
 
-  constructor(private postService: PostService, private route: ActivatedRoute) { }
+  constructor(
+    private postService: PostService,
+    private userService: UserService,
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit(): void {
     this.route.url.subscribe(url => {
@@ -27,9 +32,25 @@ export class PostDetailComponent implements OnInit {
       const post = this.postService.getPost(postId, titleUrl);
       if (post) {
         this.post = post;
-        this.postService.addComment(this.post, new Comment(this.post, new User('u/commenternumber1', 'abc', '', 0), 'Test of the comments'));
+        var commentTexts = ['Test of the comments', 'Ahh, I see...', 'I did nazi that', 'Spanish inquisition', `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus vehicula venenatis erat, rutrum consequat dolor bibendum et. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce interdum erat at odio bibendum fringilla. Mauris suscipit lacinia turpis, sit amet porttitor felis semper sed. Cras fringilla vulputate ultrices. Cras ac viverra mauris. Donec a tincidunt nulla, vel mattis enim.`];
+        this.mockComments(this.post, commentTexts);
+        // this.postService.addComment(this.post, new Comment(this.post, new User('u/commenternumber1', 'abc', '', 0), 'Test of the comments'));
       }
     })
+  }
+
+  mockComments(post: Post, commentTexts: string[]): void {
+    console.log(`Texts: ${commentTexts.length}. Users: ${this.userService.getNumberOfMockUsers()}`);
+    for (var index = 0; index < commentTexts.length && index < this.userService.getNumberOfMockUsers(); index++) {
+      var user = this.userService.getUserByMockId(index);
+      if (!user) continue;
+      var comment = new Comment(post, user, commentTexts[index]);
+      if (index === 0) {
+        comment.addAnswer(new Comment(post, user, 'What was here?', comment));
+        comment.anononymize();
+      }
+      this.postService.addComment(post, comment);
+    }
   }
 
 }
