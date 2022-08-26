@@ -24,11 +24,12 @@ export class PostService {
       
       Nulla hendrerit leo id lobortis varius. Proin nec tempus ex. Morbi aliquet accumsan tortor nec venenatis. Pellentesque blandit ac sem vel sodales. Vivamus vitae lorem non risus efficitur placerat sit amet vel lectus. Aenean consequat, purus in commodo lobortis, lectus purus eleifend lorem, id placerat quam eros ut augue. Phasellus et libero in dui ultricies pellentesque. Sed et volutpat sem. Etiam elementum sagittis lacus, at sollicitudin massa vehicula vel. Donec rutrum suscipit magna, sit amet scelerisque neque gravida eget. Mauris in pellentesque dolor. Aliquam viverra, urna nec sodales elementum, sem leo ullamcorper libero, sit amet congue leo metus vel orci. Integer sodales elit et placerat sagittis. Quisque volutpat magna non nibh fringilla dapibus.
       
-      Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Fusce molestie, sem volutpat sagittis rhoncus, lorem ipsum vehicula eros, vitae commodo dui turpis ac nisi. Donec non commodo tellus. Aenean luctus urna vitae aliquet semper. Quisque sit amet arcu posuere, sollicitudin quam ut, aliquet mauris. Sed pulvinar purus odio, a maximus quam gravida eu. Nunc in eros nec ante tempor semper. Donec sit amet ultrices velit. Donec sed lectus nec ligula sollicitudin gravida ac in lectus. Ut et elementum sapien. Nulla rhoncus lacinia urna at placerat. Integer felis ipsum, pharetra sed metus id, pretium malesuada tortor. Suspendisse sapien nulla, sollicitudin eu dolor a, vehicula fringilla metus. Donec auctor, tellus ac vulputate dapibus, nibh diam ultrices lorem, at placerat leo velit molestie diam.`)
+      Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Fusce molestie, sem volutpat sagittis rhoncus, lorem ipsum vehicula eros, vitae commodo dui turpis ac nisi. Donec non commodo tellus. Aenean luctus urna vitae aliquet semper. Quisque sit amet arcu posuere, sollicitudin quam ut, aliquet mauris. Sed pulvinar purus odio, a maximus quam gravida eu. Nunc in eros nec ante tempor semper. Donec sit amet ultrices velit. Donec sed lectus nec ligula sollicitudin gravida ac in lectus. Ut et elementum sapien. Nulla rhoncus lacinia urna at placerat. Integer felis ipsum, pharetra sed metus id, pretium malesuada tortor. Suspendisse sapien nulla, sollicitudin eu dolor a, vehicula fringilla metus. Donec auctor, tellus ac vulputate dapibus, nibh diam ultrices lorem, at placerat leo velit molestie diam.`),
+      new Post('r/Empty', 'u/voda', 'Post with no text')
     );
   }
 
-  createPost(title: string, text: string): Post {
+  createPost(title: string, text?: string): Post {
     if (!this.userService.user) {
       throw new Error('Please log in!');
     }
@@ -54,12 +55,27 @@ export class PostService {
     this.postList.splice(id, 1);
     this.postListSub.next(this.postList);
   }
+
+  // Post updates
+
+
   addComment(post: Post, comment: Comment) {
+    this.updatePost(post, (post1: Post) => {
+      post1.addComment(comment);
+    });
+  }
+  upvotePost(post: Post) {
+    this.updatePost(post, (post1: Post) => post1.upvotes++);
+  }
+  downvotePost(post: Post) {
+    this.updatePost(post, (post1: Post) => post1.downvotes++);
+  }
+  private updatePost(post: Post, f: (halo: Post) => void) {
     var foundPost = this.getPost(post.id, post.titleUrl);
     if (foundPost) {
-      foundPost.addComment(comment);
+      f(foundPost);
+      this.postListSub.next(this.postList);
     }
-    this.postListSub.next(this.postList);
   }
 
 }

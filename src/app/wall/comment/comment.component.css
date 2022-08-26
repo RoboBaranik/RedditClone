@@ -21,24 +21,28 @@
   align-items: center;
 }
 
-.content::before {
+.comment-answers::before {
   content: "";
   position: absolute;
   width: var(--divider-width);
   background-color: var(--background-color);
   height: calc(100% - 2* var(--avatar-and-name-spacing));
-  left: calc(-1* var(--font-size-comment-metadata) - var(--avatar-and-name-spacing) - var(--divider-width)/2);
+  left: calc(-0.5* var(--font-size-comment-metadata) - var(--divider-width)/2);
   top: var(--avatar-and-name-spacing);
 }
 
-.content {
+.comment-answers {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
   position: relative;
-  margin-left: calc(2 * var(--font-size-comment-metadata) + var(--avatar-and-name-spacing));
-  width: calc(100% - 4 * var(--font-size-comment-metadata) - var(--avatar-and-name-spacing));
+  margin-left: calc(1.5 * var(--font-size-comment-metadata));
+  width: calc(100% - 3 * var(--font-size-comment-metadata));
+}
+
+.content {
+  margin-left: calc(var(--font-size-comment-metadata));
 }
 
 .author-avatar {

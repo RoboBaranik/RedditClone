@@ -14,7 +14,7 @@ export class Post {
     public subreddit: string,
     public author: string,
     public title: string,
-    public text: string,
+    public text?: string,
     optional?: { images?: PostImage[], titleUrl?: string }) {
     this.images = optional?.images;
     this.upvotes = 0;

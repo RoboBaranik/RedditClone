@@ -42,6 +42,12 @@ export class PostComponent implements OnInit {
     }
     this.navigateToDetails();
   }
+  onUpvote() {
+
+  }
+  onDownvote() {
+
+  }
   navigateToDetails() {
     this.router.navigate([this.post.subreddit, this.post.id, this.post.titleUrl]);
   }

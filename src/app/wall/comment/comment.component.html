@@ -10,13 +10,14 @@
     </a>
   </ng-template>
   <div class="body">
-    <span class="divider"></span>
-    <div class="content">
-      <div class="text">{{comment.text}}</div>
-      <div class="footer">
-        Footer
+    <div class="comment-answers">
+      <div class="content">
+        <div class="text">{{comment.text}}</div>
+        <div class="footer">
+          Footer
+        </div>
+        <p>Answers: {{comment.answers.length}}</p>
       </div>
-      <p>Answers: {{comment.answers.length}}</p>
       <comment *ngFor="let answer of comment.answers" [comment]="answer"></comment>
     </div>
   </div>
