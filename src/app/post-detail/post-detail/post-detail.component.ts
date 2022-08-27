@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { User } from 'src/app/user';
-import { UserService } from 'src/app/user.service';
-import { Comment } from '../post-list/post/comment';
-import { Post } from '../post-list/post/post';
-import { PostService } from '../post-list/post/post.service';
+import { UserService } from 'src/app/auth/user.service';
+import { Post } from 'src/app/subreddit/post/post';
+import { PostService } from 'src/app/subreddit/post/post.service';
+import { Comment } from '../comment/comment';
 
 @Component({
   selector: 'post-detail',

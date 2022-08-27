@@ -1,9 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AppComponent } from './app.component';
-import { MainPageLayoutComponent } from './content/main-page-layout/main-page-layout.component';
-import { PostDetailLayoutComponent } from './content/post-detail-layout/post-detail-layout.component';
-import { SubredditLayoutComponent } from './content/subreddit-layout/subreddit-layout.component';
+import { MainPageLayoutComponent } from './main-page/main-page-layout/main-page-layout.component';
+import { PostDetailLayoutComponent } from './post-detail/post-detail-layout/post-detail-layout.component';
+import { SubredditLayoutComponent } from './subreddit/subreddit-layout/subreddit-layout.component';
 
 const routes: Routes = [
   { path: 'r/:name/:postid/:posttitle', component: PostDetailLayoutComponent },

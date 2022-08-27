@@ -1,5 +1,5 @@
-import { User } from "src/app/user";
-import { Post } from "./post";
+import { User } from "src/app/auth/user";
+import { Post } from "src/app/subreddit/post/post";
 
 export class Comment {
   private _author: User | undefined;

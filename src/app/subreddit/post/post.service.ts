@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
-import { UserService } from "src/app/user.service";
-import { Comment } from "./comment";
+import { UserService } from "../../auth/user.service";
+import { Comment } from "../../post-detail/comment/comment";
 import { Post } from "./post";
 import { PostImage } from "./post-image";
 

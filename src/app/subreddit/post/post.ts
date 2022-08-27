@@ -1,5 +1,5 @@
 import { PostImage } from "./post-image";
-import { Comment } from "./comment";
+import { Comment } from "../../post-detail/comment/comment";
 
 export class Post {
 
