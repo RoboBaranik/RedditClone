@@ -2,35 +2,47 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  background-color: #FFF;
+  background-color: var(--frontground-color);
+  height: 48px;
 }
 
 .header>* {
   margin: 0 16px;
   height: 100%;
   text-align: center;
+  cursor: pointer;
 }
 
-.user_pic {
+.header>*:hover {
+  background-color: var(--frontground-back-color);
+}
+
+.user-pic {
   max-height: 30px;
   margin-right: 5px;
 }
 
 
-.reddit_logo {
+.reddit-logo {
   display: flex;
   flex-direction: row;
   align-items: center;
   flex-grow: 0;
 }
 
-.reddit_logo_pic {
-  max-height: 40px;
+.reddit-logo-pic {
+  max-height: 32px;
   height: 100%;
   width: 100%;
+  margin-right: 8px;
 }
 
-.user_div {
+.reddit-logo-name {
+  font-size: 22px;
+  font-weight: var(--fw-medium);
+}
+
+.user-div {
   flex-grow: 0;
   display: flex;
   flex-direction: row;
@@ -38,7 +50,7 @@
   align-items: center;
 }
 
-.user_data {
+.user-data {
   display: flex;
   flex-direction: column;
   justify-content: center;

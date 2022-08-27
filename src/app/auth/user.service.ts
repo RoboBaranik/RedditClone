@@ -1,15 +1,24 @@
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable, OnInit } from "@angular/core";
 import { Subject } from "rxjs";
+import { environment } from "src/environments/environment";
 import { User } from "./user";
 
-type Nullable<T> = T | null;
+interface FirebaseResponse {
+  idToken: string,
+  email: string,
+  refreshToken: string,
+  expiresIn: string,
+  localId: string,
+  registered?: boolean
+}
 
 @Injectable({ providedIn: 'root' })
 export class UserService implements OnInit {
   ngOnInit(): void {
   }
 
-  constructor() {
+  constructor(private http: HttpClient) {
     this._users = [
       new User('user1', 'pass', 'https://www.redditstatic.com/avatars/defaults/v2/avatar_default_1.png', 5),
       new User('platipus42', 'pass', 'https://www.redditstatic.com/avatars/defaults/v2/avatar_default_2.png', 1505),
@@ -24,7 +33,41 @@ export class UserService implements OnInit {
   userUpdated: Subject<User> = new Subject<User>();
   private _users: User[] = [];
 
-  login(username: string, password: string) {
+  signIn(email: string, password: string) {
+    this.http.post<FirebaseResponse>(
+      'https://identitytoolkit.googleapis.com/v1/accounts:signUp',
+      {
+        email: email,
+        password: password,
+        returnSecureToken: true
+      },
+      {
+        params: new HttpParams().append('key', environment.apiKey)
+      }
+    ).subscribe({
+      next: (response) => console.log(response),
+      error: (error) => console.error(error)
+    });
+  }
+
+  login(email: string, password: string) {
+    this.http.post<FirebaseResponse>(
+      'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword',
+      {
+        email: email,
+        password: password,
+        returnSecureToken: true
+      },
+      {
+        params: new HttpParams().append('key', environment.apiKey)
+      }
+    ).subscribe({
+      next: (response) => console.log(response),
+      error: (error) => console.error(error)
+    });
+  }
+
+  loginTest(username: string, password: string) {
     var user = this._users.find(user => user.name.localeCompare(username) === 0 && user.isPasswordCorrect(password));
     if (user) {
       this._user = user;
