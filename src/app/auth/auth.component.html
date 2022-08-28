@@ -1,0 +1,44 @@
+<div class="auth">
+  <div class="left-decoration"></div>
+  <form [formGroup]="loginForm" *ngIf="authState === allAuthStates.LOGIN">
+    <h2>Log in</h2>
+    <mat-form-field appearance="fill">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" placeholder="Email" formControlName="email" email required>
+      <mat-error *ngIf="!getFormControl('email').valid">{{errorMessages.login['email']}}</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" placeholder="Password" formControlName="password" [minlength]="8" required>
+      <mat-error *ngIf="!getFormControl('password').valid">{{errorMessages.login['password']}}</mat-error>
+    </mat-form-field>
+    <button mat-raised-button type="submit" color="primary" (click)="login()">Log In</button>
+    <mat-error *ngIf="!loginForm.valid">{{errorMessages.login['generic']}}</mat-error>
+    <span class="state-toggle-text">New to Reddit? <button mat-button color="primary" routerLink="/signup">Sign
+        up</button></span>
+    <button mat-button color="secondary" (click)="log()">Log form</button>
+  </form>
+  <form [formGroup]="signupForm" *ngIf="authState === allAuthStates.SIGNUP">
+    <h2>Sign Up</h2>
+    <mat-form-field appearance="fill">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" placeholder="Email" formControlName="email" email required>
+      <mat-error *ngIf="!getFormControl('email').valid">{{errorMessages.signup['email']}}</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" placeholder="Password" formControlName="password" [minlength]="8" required
+        (change)="onChangePassword($event)">
+      <mat-error *ngIf="!getFormControl('password').valid">{{errorMessages.signup['password']}}</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Retype the password</mat-label>
+      <input matInput type="password" placeholder="Password" formControlName="confirmPassword" [minlength]="8" required>
+    </mat-form-field>
+    <button mat-raised-button type="submit" color="primary" (click)="signup()">Sign Up</button>
+    <mat-error *ngIf="!signupForm.valid">{{errorMessages.signup['generic']}}</mat-error>
+    <span class="state-toggle-text">Already a Redditor? <button mat-button color="primary" routerLink="/login">Log
+        in</button></span>
+    <button mat-button color="secondary" (click)="log()">Log form</button>
+  </form>
+</div>

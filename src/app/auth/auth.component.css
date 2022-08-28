@@ -1,0 +1,27 @@
+.auth {
+  --left-decoration-width: 128px;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+  background-color: var(--frontground-color);
+}
+
+.left-decoration {
+  width: var(--left-decoration-width);
+  height: 100%;
+  background: red;
+}
+
+form {
+  width: 400px;
+  margin-left: 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+.state-toggle-text {
+  margin: 32px 0;
+  font-weight: var(--fw-light);
+}

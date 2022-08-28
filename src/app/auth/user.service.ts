@@ -1,7 +1,8 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable, OnInit } from "@angular/core";
-import { Subject } from "rxjs";
+import { Observable, Subject, Subscription, tap } from "rxjs";
 import { environment } from "src/environments/environment";
+import { AuthType } from "./auth.component";
 import { User } from "./user";
 
 interface FirebaseResponse {
@@ -33,26 +34,16 @@ export class UserService implements OnInit {
   userUpdated: Subject<User> = new Subject<User>();
   private _users: User[] = [];
 
-  signIn(email: string, password: string) {
-    this.http.post<FirebaseResponse>(
-      'https://identitytoolkit.googleapis.com/v1/accounts:signUp',
-      {
-        email: email,
-        password: password,
-        returnSecureToken: true
-      },
-      {
-        params: new HttpParams().append('key', environment.apiKey)
-      }
-    ).subscribe({
-      next: (response) => console.log(response),
-      error: (error) => console.error(error)
-    });
+  signUp(email: string, password: string): Observable<FirebaseResponse> {
+    return this.formRequest(email, password, AuthType.SIGNUP);
   }
 
-  login(email: string, password: string) {
-    this.http.post<FirebaseResponse>(
-      'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword',
+  logIn(email: string, password: string): Observable<FirebaseResponse> {
+    return this.formRequest(email, password, AuthType.LOGIN);
+  }
+  private formRequest(email: string, password: string, type: AuthType): Observable<FirebaseResponse> {
+    return this.http.post<FirebaseResponse>(
+      `https://identitytoolkit.googleapis.com/v1/accounts:${this.getUrlSuffix(type)}`,
       {
         email: email,
         password: password,
@@ -61,10 +52,9 @@ export class UserService implements OnInit {
       {
         params: new HttpParams().append('key', environment.apiKey)
       }
-    ).subscribe({
-      next: (response) => console.log(response),
-      error: (error) => console.error(error)
-    });
+    ).pipe(tap(response => {
+      localStorage.setItem('userData', JSON.stringify(response));
+    }));
   }
 
   loginTest(username: string, password: string) {
@@ -88,6 +78,16 @@ export class UserService implements OnInit {
   }
   getNumberOfMockUsers(): number {
     return this._users.length;
+  }
+  getUrlSuffix(type: AuthType): string {
+    switch (type) {
+      case AuthType.LOGIN:
+        return 'signInWithPassword';
+      default:
+      case AuthType.UNDEFINED:
+      case AuthType.SIGNUP:
+        return 'signUp';
+    }
   }
 
 }

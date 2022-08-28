@@ -22,6 +22,7 @@ import { MainPageLayoutComponent } from './main-page/main-page-layout/main-page-
 import { SubredditLayoutComponent } from './subreddit/subreddit-layout/subreddit-layout.component';
 import { PostDetailComponent } from './post-detail/post-detail/post-detail.component';
 import { CommentComponent } from './post-detail/comment/comment.component';
+import { AuthComponent } from './auth/auth.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { CommentComponent } from './post-detail/comment/comment.component';
     MainPageLayoutComponent,
     SubredditLayoutComponent,
     PostDetailComponent,
-    CommentComponent
+    CommentComponent,
+    AuthComponent
   ],
   imports: [
     BrowserModule,
