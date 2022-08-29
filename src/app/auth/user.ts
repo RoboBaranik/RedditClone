@@ -1,16 +1,17 @@
 export class User {
   constructor(
+    public id: string,
     public name: string,
-    private _password: string,
+    public email: string,
     public avatarUrl: string,
-    public karma: number
+    public karma: number,
   ) { }
 
-  get id() {
+  get uname() {
     return 'u/' + this.name;
   }
 
-  isPasswordCorrect(givenPassword: string): boolean {
-    return this._password.localeCompare(givenPassword) === 0;
-  }
+  // isPasswordCorrect(givenPassword: string): boolean {
+  //   return this._password.localeCompare(givenPassword) === 0;
+  // }
 }

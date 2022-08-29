@@ -11,6 +11,12 @@ export const messages: {
         controls: string[]
       }
     },
+    basicError: {
+      [key: string]: {
+        message: string,
+        controls: string[]
+      }
+    },
     unexpectedErrorMessage: string
   }
 } = {
@@ -22,7 +28,7 @@ export const messages: {
     },
     requestError: {
       'EMAIL_EXISTS': {
-        message: 'Email already exists',
+        message: 'Email already in use',
         controls: ['email']
       },
       'OPERATION_NOT_ALLOWED': {
@@ -44,6 +50,28 @@ export const messages: {
       'USER_DISABLED': {
         message: 'Redditor has been banned',
         controls: ['email']
+      }
+    },
+    basicError: {
+      'USERNAME_TOO_SHORT': {
+        message: 'Username is too short',
+        controls: ['name']
+      },
+      'USERNAME_INVALID': {
+        message: 'Invalid username. Valid characters: a-z, A-Z, 0-9, -, _',
+        controls: ['name']
+      },
+      'PASSWORD_TOO_SHORT': {
+        message: 'Password is too short',
+        controls: ['password', 'confirmPassword']
+      },
+      'PASSWORDS_NOT_MATCHING': {
+        message: 'Passwords does not match',
+        controls: ['confirmPassword']
+      },
+      'REQUIRED': {
+        message: 'This field is required',
+        controls: ['name', 'email', 'password', 'confirmPassword']
       }
     },
     unexpectedErrorMessage: 'Unexpected error occurred'

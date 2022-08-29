@@ -12,13 +12,15 @@
   </div>
   <span class="dropdown">dropdown</span>
   <span class="searchbar">searchbar</span>
-  <div class="user-div">
-    <img
-      src="https://styles.redditmedia.com/t5_pr9ac/styles/profileIcon_y2e0t2edolr11.jpg?width=256&height=256&crop=256:256,smart&s=304df3d6d2437676b37c9f4268815d2b087a924c"
-      alt="Profile pic" class="user-pic" />
+  <a class="user-div non-text" *ngIf="loggedUser" (click)="logOut()">
+    <img [src]="loggedUser.avatarUrl" alt="Profile pic" class="user-pic" />
     <div class="user-data">
-      <span class="user-name">Darco</span>
-      <span class="user-karma">213 karma</span>
+      <span class="user-name" [innerText]="loggedUser.name"></span>
+      <span class="user-karma" [innerText]="'Karma: ' + loggedUser.karma"></span>
     </div>
+  </a>
+  <div class="user-div" *ngIf="!loggedUser">
+    <button mat-stroked-button color="primary" routerLink="/login">Log In</button>
+    <button mat-flat-button color="primary" routerLink="/signup">Sign Up</button>
   </div>
 </div>

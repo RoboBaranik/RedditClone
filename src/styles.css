@@ -57,6 +57,10 @@ a:hover {
   text-decoration: underline;
 }
 
+a.non-text:hover {
+  text-decoration: none;
+}
+
 .container {
   background-color: var(--frontground-color);
   background-color: #FFF;

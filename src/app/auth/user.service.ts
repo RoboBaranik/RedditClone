@@ -1,7 +1,9 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable, OnInit } from "@angular/core";
-import { Observable, Subject, Subscription, tap } from "rxjs";
+import { Router } from "@angular/router";
+import { BehaviorSubject, Observable, Subject, Subscription, tap } from "rxjs";
 import { environment } from "src/environments/environment";
+import { DatabaseService } from "../shared/database.service";
 import { AuthType } from "./auth.component";
 import { User } from "./user";
 
@@ -19,23 +21,26 @@ export class UserService implements OnInit {
   ngOnInit(): void {
   }
 
-  constructor(private http: HttpClient) {
+  constructor(private dbService: DatabaseService, private http: HttpClient) {
     this._users = [
-      new User('user1', 'pass', 'https://www.redditstatic.com/avatars/defaults/v2/avatar_default_1.png', 5),
-      new User('platipus42', 'pass', 'https://www.redditstatic.com/avatars/defaults/v2/avatar_default_2.png', 1505),
-      new User('fakermaster69', 'pass', 'https://www.redditstatic.com/avatars/defaults/v2/avatar_default_3.png', -200),
-      new User('defaultplayer', 'pass', 'https://www.redditstatic.com/avatars/defaults/v2/avatar_default_4.png', 100000),
-      new User('ryba', 'pass', 'https://www.redditstatic.com/avatars/defaults/v2/avatar_default_5.png', 23),
-      new User('bot1111', 'pass', 'https://www.redditstatic.com/avatars/defaults/v2/avatar_default_6.png', 54321)
+      new User('asd1', 'user1', '', 'https://www.redditstatic.com/avatars/defaults/v2/avatar_default_1.png', 5),
+      new User('asd2', 'platipus42', '', 'https://www.redditstatic.com/avatars/defaults/v2/avatar_default_2.png', 1505),
+      new User('asd3', 'fakermaster69', '', 'https://www.redditstatic.com/avatars/defaults/v2/avatar_default_3.png', -200),
+      new User('asd4', 'defaultplayer', '', 'https://www.redditstatic.com/avatars/defaults/v2/avatar_default_4.png', 100000),
+      new User('asd5', 'ryba', '', 'https://www.redditstatic.com/avatars/defaults/v2/avatar_default_5.png', 23),
+      new User('asd6', 'bot1111', '', 'https://www.redditstatic.com/avatars/defaults/v2/avatar_default_6.png', 54321)
     ];
   }
 
-  private _user: User | undefined = undefined;
-  userUpdated: Subject<User> = new Subject<User>();
+  // private _user: User | undefined = undefined;
+  userUpdated: BehaviorSubject<User | undefined> = new BehaviorSubject<User | undefined>(undefined);
   private _users: User[] = [];
+  private _logOutTimeout?: any;
 
-  signUp(email: string, password: string): Observable<FirebaseResponse> {
-    return this.formRequest(email, password, AuthType.SIGNUP);
+  signUp(username: string, email: string, password: string): Observable<FirebaseResponse> {
+    return this.formRequest(email, password, AuthType.SIGNUP).pipe(tap(response => {
+      this.dbService.createUser(new User(response.localId, username, email, this.getRandomAvatarUrl(), 0)).subscribe(user => console.log(`Created user ${user.name}`));
+    }));
   }
 
   logIn(email: string, password: string): Observable<FirebaseResponse> {
@@ -53,23 +58,48 @@ export class UserService implements OnInit {
         params: new HttpParams().append('key', environment.apiKey)
       }
     ).pipe(tap(response => {
-      localStorage.setItem('userData', JSON.stringify(response));
+      this.onLogInSuccess(response);
     }));
   }
-
-  loginTest(username: string, password: string) {
-    var user = this._users.find(user => user.name.localeCompare(username) === 0 && user.isPasswordCorrect(password));
-    if (user) {
-      this._user = user;
-      this.userUpdated.next(this._user);
+  private onLogInSuccess(response: FirebaseResponse) {
+    localStorage.setItem('userData', JSON.stringify(response));
+    this.getUserFromResponse(response).subscribe(user => {
+      this.userUpdated.next(user);
+      this._logOutTimeout = setTimeout(() => { this.logOut(); }, +response.expiresIn * 1000);
+    });
+  }
+  autoLogIn() {
+    var userData = localStorage.getItem('userData');
+    if (userData) {
+      this.getUserFromResponse(JSON.parse(userData)).subscribe(user => {
+        if (user) {
+          this.userUpdated.next(user);
+          console.log('Auto login successful. Welcome, ' + this.user?.name);
+        }
+      });
     }
   }
+  logOut() {
+    localStorage.removeItem('userData');
+    this.userUpdated.next(undefined);
+    if (this._logOutTimeout) {
+      clearTimeout(this._logOutTimeout);
+    }
+  }
+
+  // loginTest(username: string, password: string) {
+  //   var user = this._users.find(user => user.name.localeCompare(username) === 0 && user.isPasswordCorrect(password));
+  //   if (user) {
+  //     this._user = user;
+  //     this.userUpdated.next(this._user);
+  //   }
+  // }
   get user(): User | undefined {
-    return this._user;
+    return this.userUpdated.getValue();
   }
-  logout() {
-    this._user = undefined;
-  }
+  // logout() {
+  //   this._user = undefined;
+  // }
   getUserByMockId(id: number): User | undefined {
     if (id >= 0 && id < this._users.length) {
       return this._users[id];
@@ -88,6 +118,14 @@ export class UserService implements OnInit {
       case AuthType.SIGNUP:
         return 'signUp';
     }
+  }
+  getUserFromResponse(response: FirebaseResponse): Observable<User> {
+    return this.dbService.getUserById(response.localId);
+    // return new User(response.localId, 'u/username', response.email, '', 0);
+  }
+  getRandomAvatarUrl(): string {
+    const id = Math.floor((Math.random() * 8));
+    return `https://www.redditstatic.com/avatars/defaults/v2/avatar_default_${id}.png`;
   }
 
 }

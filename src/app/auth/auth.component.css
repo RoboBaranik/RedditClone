@@ -14,11 +14,36 @@
   background: red;
 }
 
+.generic-error {
+  min-height: 64px;
+  width: calc(100% - 32px);
+  margin: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.generic-error div {
+  background-color: #f00b;
+  color: white;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 2px;
+  font-weight: var(--fw-medium);
+}
+
 form {
   width: 400px;
   margin-left: 32px;
   display: flex;
   flex-direction: column;
+}
+
+mat-form-field {
+  margin-bottom: 8px;
 }
 
 .state-toggle-text {

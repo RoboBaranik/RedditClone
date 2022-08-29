@@ -50,6 +50,10 @@
   align-items: center;
 }
 
+.user-div button {
+  margin: 0 8px;
+}
+
 .user-data {
   display: flex;
   flex-direction: column;

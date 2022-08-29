@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
@@ -23,6 +23,7 @@ import { SubredditLayoutComponent } from './subreddit/subreddit-layout/subreddit
 import { PostDetailComponent } from './post-detail/post-detail/post-detail.component';
 import { CommentComponent } from './post-detail/comment/comment.component';
 import { AuthComponent } from './auth/auth.component';
+import { UserService } from './auth/user.service';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,12 @@ import { AuthComponent } from './auth/auth.component';
     MatIconModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [{
+    provide: APP_INITIALIZER,
+    useFactory: (userService: UserService) => () => { return userService.autoLogIn(); },
+    deps: [UserService],
+    multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

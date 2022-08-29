@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { lastValueFrom } from 'rxjs';
+import { DatabaseService } from '../shared/database.service';
 import { messages } from '../shared/messages';
+import { UsernameExistsValidator } from '../shared/username-exists.validator';
 import { UserService } from './user.service';
 
 @Component({
@@ -23,13 +26,17 @@ export class AuthComponent implements OnInit {
       'generic': ''
     },
     signup: {
+      'name': '',
       'email': '',
       'password': '',
+      'confirmPassword': '',
       'generic': ''
     }
   };
 
-  constructor(private route: ActivatedRoute, private router: Router, private userService: UserService) {
+  constructor(private route: ActivatedRoute, private router: Router,
+    private userService: UserService, private dbService: DatabaseService,
+    private userExistsValidator: UsernameExistsValidator) {
     this.loginForm = this.initLoginForm();
     this.signupForm = this.initSignupForm();
     this.resetErrorMessages();
@@ -51,6 +58,9 @@ export class AuthComponent implements OnInit {
       }
       this.authState = AuthType.UNDEFINED;
     });
+    if (this.authState === AuthType.LOGIN && this.userService.user) {
+      this.router.navigate(['']);
+    }
     const reset = (status: any) => {
       if (!this.areErrorMessagesEmpty()) {
         this.resetErrorMessages();
@@ -79,6 +89,10 @@ export class AuthComponent implements OnInit {
       }
     })
     return new FormGroup({
+      name: new FormControl(null, {
+        validators: [Validators.pattern(/^[a-zA-Z0-9-_]+$/)],
+        asyncValidators: [this.userExistsValidator.validate.bind(this.userExistsValidator)]
+      }),
       email: new FormControl(null),
       password: passwordControl,
       confirmPassword: confirmPasswordControl
@@ -92,18 +106,20 @@ export class AuthComponent implements OnInit {
         'generic': ''
       },
       signup: {
+        'name': '',
         'email': '',
         'password': '',
+        'confirmPassword': '',
         'generic': ''
       }
     };
-    const controlsToMakeValid = ['email', 'password', 'generic'];
+    const controlsToMakeValid = ['name', 'email', 'password', 'confirmPassword', 'generic'];
     controlsToMakeValid.forEach(control => {
-      const removedError = JSON.stringify(this.getFormControl(control).errors).replace(/ *\"incorrect\": *true,? */, '');
+      const removedError = JSON.stringify(this.getFormControlByErrorType(control).errors).replace(/ *\"incorrect\": *true,? */, '');
       if (removedError === '{}') {
-        this.getFormControl(control).setErrors(null);
+        this.getFormControlByErrorType(control).setErrors(null);
       } else {
-        this.getFormControl(control).setErrors(JSON.parse(removedError));
+        this.getFormControlByErrorType(control).setErrors(JSON.parse(removedError));
       }
     });
   }
@@ -124,8 +140,11 @@ export class AuthComponent implements OnInit {
       return;
     }
     this.userService.logIn(this.loginForm.controls['email'].value, this.loginForm.controls['password'].value).subscribe({
-      next: (response) => this.router.navigate(['']),
+      next: (response) => {
+        this.router.navigate(['']);
+      },
       error: (error) => {
+        console.error('Error by logging in.');
         console.log(error);
         this.handleErrorResponse(error.error.error.message);
       }
@@ -137,8 +156,10 @@ export class AuthComponent implements OnInit {
     if (!this.signupForm.valid) {
       return;
     }
-    this.userService.signUp(this.signupForm.controls['email'].value, this.signupForm.controls['password'].value).subscribe({
-      next: (response) => this.router.navigate(['']),
+    this.userService.signUp(this.signupForm.controls['name'].value, this.signupForm.controls['email'].value, this.signupForm.controls['password'].value).subscribe({
+      next: (response) => {
+        this.router.navigate(['']);
+      },
       error: (error) => {
         console.log(error);
         this.handleErrorResponse(error.error.error.message);
@@ -159,28 +180,31 @@ export class AuthComponent implements OnInit {
       case AuthType.UNDEFINED:
         errorControls.forEach(control => {
           this.errorMessages.signup[control] = errorMessage;
-          this.getFormControl(control).setErrors({ 'incorrect': true });
+          this.getFormControlByErrorType(control).setErrors({ 'incorrect': true });
         });
         break;
       case AuthType.LOGIN:
         errorControls.forEach(control => {
           this.errorMessages.login[control] = errorMessage;
-          this.getFormControl(control).setErrors({ 'incorrect': true });
+          this.getFormControlByErrorType(control).setErrors({ 'incorrect': true });
         });
         break;
     }
   }
-  getFormControl(name: string): FormControl | FormGroup {
+  handleBasicError(control: FormControl) {
+    // TODO: Finish
+  }
+  getFormControlByErrorType(name: string): FormControl | FormGroup {
     switch (this.authState) {
       default:
       case AuthType.SIGNUP:
       case AuthType.UNDEFINED:
-        if (name === 'generic') {
+        if (name === 'generic' || !this.signupForm.controls[name]) {
           return this.signupForm;
         }
         return this.signupForm.controls[name] as FormControl;
       case AuthType.LOGIN:
-        if (name === 'generic') {
+        if (name === 'generic' || !this.loginForm.controls[name]) {
           return this.loginForm;
         }
         return this.loginForm.controls[name] as FormControl;
