@@ -2,7 +2,7 @@
   <div class="left-decoration"></div>
   <form [formGroup]="loginForm" *ngIf="authState === allAuthStates.LOGIN">
     <div class="generic-error">
-      <div *ngIf="!loginForm.valid && errorMessages.login['generic']">
+      <div *ngIf="!loginForm.valid && !!errorMessages.login['generic']">
         {{errorMessages.login['generic']}}
       </div>
     </div>
@@ -10,16 +10,18 @@
 
     <mat-form-field appearance="fill">
       <mat-label>Email</mat-label>
-      <input matInput type="email" placeholder="Email" formControlName="email" email required>
-      <mat-error *ngIf="!getFormControlByErrorType('email').valid && errorMessages.login['email']">
+      <input matInput type="email" placeholder="Email" formControlName="email" email required
+        (blur)="handleBasicError('email', getFormControlByErrorType('email'))">
+      <mat-error *ngIf="!getFormControlOrGroupByErrorType('email').valid && !!errorMessages.login['email']">
         {{errorMessages.login['email']}}
       </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="fill">
       <mat-label>Password</mat-label>
-      <input matInput type="password" placeholder="Password" formControlName="password" [minlength]="8" required>
-      <mat-error *ngIf="!getFormControlByErrorType('password').valid && errorMessages.login['password']">
+      <input matInput type="password" placeholder="Password" formControlName="password" [minlength]="8" required
+        (blur)="handleBasicError('password', getFormControlByErrorType('password'))">
+      <mat-error *ngIf="!getFormControlOrGroupByErrorType('password').valid && !!errorMessages.login['password']">
         {{errorMessages.login['password']}}
       </mat-error>
     </mat-form-field>
@@ -34,21 +36,25 @@
 
   <form [formGroup]="signupForm" *ngIf="authState === allAuthStates.SIGNUP">
     <div class="generic-error">
-      <div *ngIf="!signupForm.valid && errorMessages.signup['generic']">
+      <div *ngIf="!signupForm.valid && !!errorMessages.signup['generic']">
         {{errorMessages.signup['generic']}}
       </div>
     </div>
     <h2>Sign Up</h2>
     <mat-form-field appearance="fill">
       <mat-label>User name</mat-label>
-      <input matInput type="text" placeholder="User name" formControlName="name" [minlength]="3" required>
-      <!-- <mat-error *ngIf="!getFormControl('user').valid"></mat-error> -->
+      <input matInput type="text" placeholder="User name" formControlName="name" [minlength]="3" required
+        (blur)="handleBasicError('name', getFormControlByErrorType('name'))">
+      <mat-error *ngIf="!getFormControlOrGroupByErrorType('name').valid && !!errorMessages.signup['name']">
+        {{errorMessages.signup['name']}}
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="fill">
       <mat-label>Email</mat-label>
-      <input matInput type="email" placeholder="Email" formControlName="email" email required>
-      <mat-error *ngIf="!getFormControlByErrorType('email').valid && errorMessages.signup['email']">
+      <input matInput type="email" placeholder="Email" formControlName="email" email required
+        (blur)="handleBasicError('email', getFormControlByErrorType('email'))">
+      <mat-error *ngIf="!getFormControlOrGroupByErrorType('email').valid && !!errorMessages.signup['email']">
         {{errorMessages.signup['email']}}
       </mat-error>
     </mat-form-field>
@@ -56,15 +62,20 @@
     <mat-form-field appearance="fill">
       <mat-label>Password</mat-label>
       <input matInput type="password" placeholder="Password" formControlName="password" [minlength]="8" required
-        (change)="onChangePassword($event)">
-      <mat-error *ngIf="!getFormControlByErrorType('password').valid && errorMessages.signup['password']">
+        (blur)="handleBasicError('password', getFormControlByErrorType('password'))">
+      <mat-error *ngIf="!getFormControlOrGroupByErrorType('password').valid && !!errorMessages.signup['password']">
         {{errorMessages.signup['password']}}
       </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="fill">
       <mat-label>Retype the password</mat-label>
-      <input matInput type="password" placeholder="Password" formControlName="confirmPassword" [minlength]="8" required>
+      <input matInput type="password" placeholder="Password" formControlName="confirmPassword" [minlength]="8" required
+        (blur)="handleBasicError('confirmPassword', getFormControlByErrorType('confirmPassword'))">
+      <mat-error
+        *ngIf="!getFormControlOrGroupByErrorType('confirmPassword').valid && !!errorMessages.signup['confirmPassword']">
+        {{errorMessages.signup['confirmPassword']}}
+      </mat-error>
     </mat-form-field>
 
     <button mat-raised-button type="submit" color="primary" (click)="signup()">Sign Up</button>

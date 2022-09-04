@@ -11,6 +11,12 @@ export const messages: {
         controls: string[]
       }
     },
+    basicErrorsByControl: {
+      [key: string]: {
+        error: string,
+        basicErrorCode: string
+      }[]
+    },
     basicError: {
       [key: string]: {
         message: string,
@@ -52,6 +58,26 @@ export const messages: {
         controls: ['email']
       }
     },
+    basicErrorsByControl: {
+      'name': [
+        { error: 'required', basicErrorCode: 'REQUIRED' },
+        { error: 'minlength', basicErrorCode: 'USERNAME_TOO_SHORT' },
+        { error: 'pattern', basicErrorCode: 'USERNAME_INVALID' }
+      ],
+      'email': [
+        { error: 'required', basicErrorCode: 'REQUIRED' },
+        { error: 'email', basicErrorCode: 'EMAIL_INVALID' }
+      ],
+      'password': [
+        { error: 'required', basicErrorCode: 'REQUIRED' },
+        { error: 'minlength', basicErrorCode: 'PASSWORD_TOO_SHORT' },
+      ],
+      'confirmPassword': [
+        { error: 'required', basicErrorCode: 'REQUIRED' },
+        { error: 'minlength', basicErrorCode: 'PASSWORD_TOO_SHORT' },
+        { error: 'pattern', basicErrorCode: 'PASSWORDS_NOT_MATCHING' }
+      ]
+    },
     basicError: {
       'USERNAME_TOO_SHORT': {
         message: 'Username is too short',
@@ -60,6 +86,10 @@ export const messages: {
       'USERNAME_INVALID': {
         message: 'Invalid username. Valid characters: a-z, A-Z, 0-9, -, _',
         controls: ['name']
+      },
+      'EMAIL_INVALID': {
+        message: 'Invalid email',
+        controls: ['email']
       },
       'PASSWORD_TOO_SHORT': {
         message: 'Password is too short',

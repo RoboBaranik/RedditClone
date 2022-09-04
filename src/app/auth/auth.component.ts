@@ -19,6 +19,7 @@ export class AuthComponent implements OnInit {
   confirmPasswordValidator?: ValidatorFn;
   allAuthStates = AuthType;
   authState: AuthType = AuthType.UNDEFINED;
+  controlNames = { login: ['email', 'password'], signup: ['name', 'email', 'password', 'confirmPassword'] };
   errorMessages: { login: { [key: string]: string }, signup: { [key: string]: string } } = {
     login: {
       'email': '',
@@ -70,14 +71,28 @@ export class AuthComponent implements OnInit {
     this.loginForm.valueChanges.subscribe(reset);
   }
   initLoginForm(): FormGroup {
+    const emailControl = new FormControl(null);
+    emailControl.statusChanges.subscribe(status => this.handleBasicError('email', emailControl));
+
+    const passwordControl = new FormControl(null, Validators.pattern(/\S+/));
+    passwordControl.statusChanges.subscribe(status => this.handleBasicError('password', passwordControl));
+
     return new FormGroup({
-      email: new FormControl(null),
-      password: new FormControl(null, Validators.pattern(/\S+/))
+      email: emailControl,
+      password: passwordControl
     });
   }
   initSignupForm(): FormGroup {
-    var confirmPasswordControl = new FormControl(null, Validators.pattern(/\S+/));
-    var passwordControl = new FormControl(null, Validators.pattern(/\S+/));
+    const nameControl = new FormControl(null, {
+      validators: [Validators.pattern(/^[a-zA-Z0-9-_]+$/)],
+      asyncValidators: [this.userExistsValidator.validate.bind(this.userExistsValidator)]
+    });
+    nameControl.statusChanges.subscribe(status => this.handleBasicError('name', nameControl));
+
+    const emailControl = new FormControl(null);
+    emailControl.statusChanges.subscribe(status => this.handleBasicError('email', emailControl));
+
+    const passwordControl = new FormControl(null, Validators.pattern(/\S+/));
     passwordControl.valueChanges.subscribe(value => {
       if (value) {
         if (this.confirmPasswordValidator) {
@@ -87,13 +102,15 @@ export class AuthComponent implements OnInit {
         confirmPasswordControl.addValidators(this.confirmPasswordValidator);
         confirmPasswordControl.updateValueAndValidity();
       }
-    })
+    });
+    passwordControl.statusChanges.subscribe(status => this.handleBasicError('password', passwordControl));
+
+    const confirmPasswordControl = new FormControl(null, Validators.pattern(/\S+/));
+    confirmPasswordControl.statusChanges.subscribe(status => this.handleBasicError('confirmPassword', confirmPasswordControl));
+
     return new FormGroup({
-      name: new FormControl(null, {
-        validators: [Validators.pattern(/^[a-zA-Z0-9-_]+$/)],
-        asyncValidators: [this.userExistsValidator.validate.bind(this.userExistsValidator)]
-      }),
-      email: new FormControl(null),
+      name: nameControl,
+      email: emailControl,
       password: passwordControl,
       confirmPassword: confirmPasswordControl
     });
@@ -115,11 +132,11 @@ export class AuthComponent implements OnInit {
     };
     const controlsToMakeValid = ['name', 'email', 'password', 'confirmPassword', 'generic'];
     controlsToMakeValid.forEach(control => {
-      const removedError = JSON.stringify(this.getFormControlByErrorType(control).errors).replace(/ *\"incorrect\": *true,? */, '');
+      const removedError = JSON.stringify(this.getFormControlOrGroupByErrorType(control).errors).replace(/ *\"incorrect\": *true,? */, '');
       if (removedError === '{}') {
-        this.getFormControlByErrorType(control).setErrors(null);
+        this.getFormControlOrGroupByErrorType(control).setErrors(null);
       } else {
-        this.getFormControlByErrorType(control).setErrors(JSON.parse(removedError));
+        this.getFormControlOrGroupByErrorType(control).setErrors(JSON.parse(removedError));
       }
     });
   }
@@ -136,6 +153,7 @@ export class AuthComponent implements OnInit {
   login() {
     console.log(this.loginForm);
     console.log(this.loginForm.valid ? 'Valid' : 'Invalid');
+    this.handleBasicErrorAll();
     if (!this.loginForm.valid) {
       return;
     }
@@ -153,6 +171,7 @@ export class AuthComponent implements OnInit {
   signup() {
     console.log(this.signupForm);
     console.log(this.signupForm.valid ? 'Valid' : 'Invalid');
+    this.handleBasicErrorAll();
     if (!this.signupForm.valid) {
       return;
     }
@@ -166,10 +185,7 @@ export class AuthComponent implements OnInit {
       }
     });
   }
-  onChangePassword(event: Event) {
-    // var passwordControl = <FormControl>this.signupForm.controls['password'];
-    // if (passwordControl.value)
-  }
+
   handleErrorResponse(errorResponse: string) {
     var errorObject = messages.error.requestError[errorResponse];
     var errorMessage = errorObject ? errorObject.message : messages.error.unexpectedErrorMessage;
@@ -180,21 +196,48 @@ export class AuthComponent implements OnInit {
       case AuthType.UNDEFINED:
         errorControls.forEach(control => {
           this.errorMessages.signup[control] = errorMessage;
-          this.getFormControlByErrorType(control).setErrors({ 'incorrect': true });
+          this.getFormControlOrGroupByErrorType(control).setErrors({ 'incorrect': true });
         });
         break;
       case AuthType.LOGIN:
         errorControls.forEach(control => {
           this.errorMessages.login[control] = errorMessage;
-          this.getFormControlByErrorType(control).setErrors({ 'incorrect': true });
+          this.getFormControlOrGroupByErrorType(control).setErrors({ 'incorrect': true });
         });
         break;
     }
   }
-  handleBasicError(control: FormControl) {
-    // TODO: Finish
+  handleBasicError(controlName: string, control: FormControl) {
+    if (!control.errors) {
+      this.getErrorMessages()[controlName] = '';
+      return;
+    }
+    const errorsPossible = messages.error.basicErrorsByControl[controlName];
+    for (var i = 0; i < errorsPossible.length; i++) {
+      if (control.hasError(errorsPossible[i].error)) {
+        const basicErrorCode = errorsPossible[i].basicErrorCode;
+        const errorMessage = messages.error.basicError[basicErrorCode].message;
+        this.getErrorMessages()[controlName] = errorMessage;
+      }
+    }
   }
-  getFormControlByErrorType(name: string): FormControl | FormGroup {
+  handleBasicErrorAll() {
+    switch (this.authState) {
+      default:
+      case AuthType.SIGNUP:
+      case AuthType.UNDEFINED:
+        this.controlNames.signup.forEach(controlName => {
+          this.handleBasicError(controlName, this.signupForm.controls[controlName] as FormControl);
+        });
+        break;
+      case AuthType.LOGIN:
+        this.controlNames.login.forEach(controlName => {
+          this.handleBasicError(controlName, this.loginForm.controls[controlName] as FormControl);
+        });
+        break;
+    }
+  }
+  getFormControlOrGroupByErrorType(name: string): FormControl | FormGroup {
     switch (this.authState) {
       default:
       case AuthType.SIGNUP:
@@ -208,6 +251,26 @@ export class AuthComponent implements OnInit {
           return this.loginForm;
         }
         return this.loginForm.controls[name] as FormControl;
+    }
+  }
+  getFormControlByErrorType(name: string): FormControl {
+    switch (this.authState) {
+      default:
+      case AuthType.SIGNUP:
+      case AuthType.UNDEFINED:
+        return this.signupForm.controls[name] as FormControl;
+      case AuthType.LOGIN:
+        return this.loginForm.controls[name] as FormControl;
+    }
+  }
+  getErrorMessages(): { [key: string]: string } {
+    switch (this.authState) {
+      default:
+      case AuthType.SIGNUP:
+      case AuthType.UNDEFINED:
+        return this.errorMessages.signup;
+      case AuthType.LOGIN:
+        return this.errorMessages.login;
     }
   }
   log() {
