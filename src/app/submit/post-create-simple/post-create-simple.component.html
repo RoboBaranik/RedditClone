@@ -1,0 +1,7 @@
+<div class="container post-create-simple">
+  <img class="user-avatar" *ngIf="!!getUser()" [src]="getUser()?.avatarUrl" [alt]="getUser()?.name" />
+  <mat-form-field appearance="fill">
+    <mat-label>Create post</mat-label>
+    <input matInput placeholder="Create post">
+  </mat-form-field>
+</div>

@@ -24,6 +24,8 @@ import { PostDetailComponent } from './post-detail/post-detail/post-detail.compo
 import { CommentComponent } from './post-detail/comment/comment.component';
 import { AuthComponent } from './auth/auth.component';
 import { UserService } from './auth/user.service';
+import { PostCreateSimpleComponent } from './subreddit/post-create/post-create-simple/post-create-simple.component';
+import { SubmitLayoutComponent } from './submit/submit-layout/submit-layout.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,9 @@ import { UserService } from './auth/user.service';
     SubredditLayoutComponent,
     PostDetailComponent,
     CommentComponent,
-    AuthComponent
+    AuthComponent,
+    PostCreateSimpleComponent,
+    SubmitLayoutComponent
   ],
   imports: [
     BrowserModule,
