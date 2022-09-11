@@ -49,7 +49,10 @@ export class PostComponent implements OnInit {
 
   }
   navigateToDetails() {
-    this.router.navigate([this.post.subreddit, this.post.id, this.post.titleUrl]);
+    const subreddit = this.getSubredditName();
+    if (subreddit) {
+      this.router.navigate([subreddit, this.post.id, this.post.titleUrl]);
+    }
   }
 
   postMouseDown(event: MouseEvent) {

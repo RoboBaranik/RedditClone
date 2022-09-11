@@ -14,23 +14,23 @@
   <div class="content">
     <div class="metadata">
       <a class="sub-image"></a>
-      <a class="sub-name" [routerLink]="'/'+post.subreddit">{{post.subreddit}}</a>
+      <a class="sub-name" [routerLink]="'/'+getSubredditName()">{{getSubredditName()}}</a>
       <span>|</span>
-      <span>Posted by <a [routerLink]="'/'+post.author">{{post.author}}</a></span>
+      <span>Posted by <a [routerLink]="'/'+getUserName()">{{getUserName()}}</a></span>
       <span>5 min ago</span>
     </div>
     <div>
-      <h2 class="post-title">{{post.title}}</h2>
+      <h2 class="post-title">{{post?.title}}</h2>
     </div>
-    <div *ngIf="post.text && post.text.length > 0">
+    <div *ngIf="!!post && post.text && post.text.length > 0">
       <span class="post-text">{{post.text}}</span>
     </div>
-    <div *ngIf="post.images && post.images.length > 0">
+    <div *ngIf="!!post && post.images && post.images.length > 0">
       <img class="post-image" [src]="post.images[0].url" [alt]="post.images[0].title">
       <div class="post-image-title">{{post.images[0].title}}</div>
     </div>
   </div>
   <div class="comments">
-    <comment *ngFor="let comment of post.comments" [comment]="comment"></comment>
+    <comment *ngFor="let comment of post?.comments" [comment]="comment"></comment>
   </div>
 </div>

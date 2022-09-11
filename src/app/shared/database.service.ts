@@ -45,7 +45,7 @@ export class DatabaseService {
       postClone.author = user.name;
     }
     console.log(postClone);
-    return this.getPostById(postClone).pipe(mergeMap(postFound => {
+    return this.getPostById(postClone.id, postClone.titleUrl).pipe(mergeMap(postFound => {
       if (!postFound) {
         return this.http.put<Post>(`${this._dbUrl}posts/${postClone.id}_${postClone.titleUrl}.json`, postClone);
       }
@@ -56,8 +56,8 @@ export class DatabaseService {
     ));
     // return this.http.put<Post>(`${this._dbUrl}posts/${post.id}_${post.titleUrl}.json`, post);
   }
-  getPostById(post: Post) {
-    return this.http.get<Post>(`${this._dbUrl}posts/${post.id}_${post.titleUrl}.json`);
+  getPostById(postId: string, postTitleUrl: string): Observable<Post> {
+    return this.http.get<Post>(`${this._dbUrl}posts/${postId}_${postTitleUrl}.json`);
   }
   getPostAll(limit?: number): Observable<Post[]> {
     const params = new HttpParams();

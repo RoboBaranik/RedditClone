@@ -49,7 +49,8 @@ export class PostService {
     return this.postList[id];
   }
   getPost(postId: string, postTitleUrl: string) {
-    return this.postList.find(post => post.id === postId && post.titleUrl.localeCompare(postTitleUrl) === 0);
+    return this.dbService.getPostById(postId, postTitleUrl);
+    // return this.postList.find(post => post.id === postId && post.titleUrl.localeCompare(postTitleUrl) === 0);
   }
   getPostAll(): void {
     this.dbService.getPostAll(20).subscribe(posts => this.postListSub.next(posts));
@@ -68,7 +69,7 @@ export class PostService {
 
   addComment(post: Post, comment: Comment) {
     this.updatePost(post, (post1: Post) => {
-      post1.addComment(comment);
+      Post.addComment(post1, comment);
     });
   }
   upvotePost(post: Post) {
@@ -78,11 +79,12 @@ export class PostService {
     this.updatePost(post, (post1: Post) => post1.downvotes++);
   }
   private updatePost(post: Post, f: (halo: Post) => void) {
-    var foundPost = this.getPost(post.id, post.titleUrl);
-    if (foundPost) {
-      f(foundPost);
-      this.postListSub.next(this.postList);
-    }
+    this.getPost(post.id, post.titleUrl).subscribe(foundPost => {
+      if (foundPost) {
+        f(foundPost);
+        this.postListSub.next(this.postList);
+      }
+    });
   }
 
 }

@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { User } from 'src/app/auth/user';
 import { UserService } from 'src/app/auth/user.service';
 import { Post } from 'src/app/subreddit/post/post';
 import { PostService } from 'src/app/subreddit/post/post.service';
+import { Subreddit } from 'src/app/subreddit/subreddit';
 import { Comment } from '../comment/comment';
 
 @Component({
@@ -12,12 +14,14 @@ import { Comment } from '../comment/comment';
 })
 export class PostDetailComponent implements OnInit {
 
-  post!: Post;
+  post?: Post;
+  subreddit?: string = '     ';
+  user?: string = '     ';
 
   constructor(
     private postService: PostService,
     private userService: UserService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
@@ -28,28 +32,44 @@ export class PostDetailComponent implements OnInit {
       }
       const postId = url[2].path;
       const titleUrl = url[3].path;
-      const post = this.postService.getPost(postId, titleUrl);
-      if (post) {
-        this.post = post;
-        var commentTexts = ['Test of the comments', 'Ahh, I see...', 'I did nazi that', 'Spanish inquisition', `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus vehicula venenatis erat, rutrum consequat dolor bibendum et. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce interdum erat at odio bibendum fringilla. Mauris suscipit lacinia turpis, sit amet porttitor felis semper sed. Cras fringilla vulputate ultrices. Cras ac viverra mauris. Donec a tincidunt nulla, vel mattis enim.`];
-        this.mockComments(this.post, commentTexts);
-        // this.postService.addComment(this.post, new Comment(this.post, new User('u/commenternumber1', 'abc', '', 0), 'Test of the comments'));
-      }
-    })
+      const sub = this.postService.getPost(postId, titleUrl).subscribe(post => {
+        if (post) {
+          // if (!post.comments) {
+          //   post.comments = [];
+          // }
+          this.post = post;
+          var commentTexts = ['Test of the comments', 'Ahh, I see...', 'I did nazi that', 'Spanish inquisition', `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus vehicula venenatis erat, rutrum consequat dolor bibendum et. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce interdum erat at odio bibendum fringilla. Mauris suscipit lacinia turpis, sit amet porttitor felis semper sed. Cras fringilla vulputate ultrices. Cras ac viverra mauris. Donec a tincidunt nulla, vel mattis enim.`];
+          // this.mockComments(this.post, commentTexts);
+          // this.postService.addComment(this.post, new Comment(this.post, new User('u/commenternumber1', 'abc', '', 0), 'Test of the comments'));
+        }
+      });
+    });
   }
 
-  mockComments(post: Post, commentTexts: string[]): void {
-    console.log(`Texts: ${commentTexts.length}. Users: ${this.userService.getNumberOfMockUsers()}`);
-    for (var index = 0; index < commentTexts.length && index < this.userService.getNumberOfMockUsers(); index++) {
-      var user = this.userService.getUserByMockId(index);
-      if (!user) continue;
-      var comment = new Comment(post, user, commentTexts[index]);
-      if (index === 0) {
-        comment.addAnswer(new Comment(post, user, 'What was here?', comment));
-        comment.anononymize();
-      }
-      this.postService.addComment(post, comment);
+  // mockComments(post: Post, commentTexts: string[]): void {
+  //   console.log(`Texts: ${commentTexts.length}. Users: ${this.userService.getNumberOfMockUsers()}`);
+  //   for (var index = 0; index < commentTexts.length && index < this.userService.getNumberOfMockUsers(); index++) {
+  //     var user = this.userService.getUserByMockId(index);
+  //     if (!user) continue;
+  //     var comment = new Comment(post, user, commentTexts[index]);
+  //     if (index === 0) {
+  //       comment.addAnswer(new Comment(post, user, 'What was here?', comment));
+  //       comment.anononymize();
+  //     }
+  //     this.postService.addComment(post, comment);
+  //   }
+  // }
+
+  getSubredditName(): string {
+    this.subreddit = this.post ? Post.getRsubreddit(this.post.subreddit) : '';
+    return this.subreddit;
+  }
+  getUserName(): string {
+    if (this.post) {
+      this.user = this.post ? Post.getUuser(this.post.author) : '';
+      return this.user;
     }
+    return '';
   }
 
 }

@@ -30,8 +30,8 @@ export class Post {
     }
   }
 
-  addComment(comment: Comment) {
-    this.comments.push(comment);
+  static addComment(post: Post, comment: Comment) {
+    post.comments.push(comment);
   }
 
   generateId(): string {
@@ -42,21 +42,21 @@ export class Post {
     this.titleUrl = this.title.replace(new RegExp('[\n\t /\\-,\.\?!]', 'gm'), '_');
   }
   static getUuser(author: User | string) {
-    if (author as User) {
-      return User.usernameWithPrefix((<User>author).name);
-    }
     if (typeof author == 'string') {
       return User.usernameWithPrefix(author);
+    }
+    if (author as User) {
+      return User.usernameWithPrefix((<User>author).name);
     }
     console.error(`Unexpected user value: ${author}`);
     return '';
   }
   static getRsubreddit(subreddit: Subreddit | string) {
-    if (subreddit as Subreddit) {
-      return (<Subreddit>subreddit).rname;
-    }
     if (typeof subreddit == 'string') {
       return Subreddit.subredditWithPrefix(subreddit);
+    }
+    if (subreddit as Subreddit) {
+      return (<Subreddit>subreddit).rname;
     }
     console.error(`Unexpected user value: ${subreddit}`);
     return '';
