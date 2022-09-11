@@ -13,10 +13,10 @@
   </div>
   <div class="content">
     <div class="metadata">
-      <a class="sub-image" [routerLink]="'/'+post.subreddit"></a>
-      <a class="sub-name" [routerLink]="'/'+post.subreddit">{{post.subreddit}}</a>
+      <a class="sub-image" [routerLink]="'/'+getSubredditName()"></a>
+      <a class="sub-name" [routerLink]="'/'+getSubredditName()">{{getSubredditName()}}</a>
       <span>|</span>
-      <span>Posted by <a [routerLink]="'/'+post.author">{{post.author}}</a></span>
+      <span>Posted by <a [routerLink]="'/'+getUserName()">{{getUserName()}}</a></span>
       <span>5 min ago</span>
     </div>
     <div>

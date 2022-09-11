@@ -1,0 +1,15 @@
+.wall {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+post-create {
+  width: 640px;
+}
+
+wall-sidebar {
+  width: 312px;
+  margin-left: 32px;
+}

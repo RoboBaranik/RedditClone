@@ -1,5 +1,8 @@
 import { PostImage } from "./post-image";
 import { Comment } from "../../post-detail/comment/comment";
+import { Subreddit } from "../subreddit";
+import { User } from "src/app/auth/user";
+import * as uuid from 'uuid';
 
 export class Post {
 
@@ -11,8 +14,8 @@ export class Post {
   public comments: Comment[] = [];
 
   constructor(
-    public subreddit: string,
-    public author: string,
+    public subreddit: Subreddit | string,
+    public author: User | string,
     public title: string,
     public text?: string,
     optional?: { images?: PostImage[], titleUrl?: string }) {
@@ -32,12 +35,51 @@ export class Post {
   }
 
   generateId(): string {
-    return 'abcdef';
+    const id = uuid.v4();
+    return id.slice(0, 8);
   }
   generateTitleUrl(): void {
     this.titleUrl = this.title.replace(new RegExp('[\n\t /\\-,\.\?!]', 'gm'), '_');
   }
+  static getUuser(author: User | string) {
+    if (author as User) {
+      return User.usernameWithPrefix((<User>author).name);
+    }
+    if (typeof author == 'string') {
+      return User.usernameWithPrefix(author);
+    }
+    console.error(`Unexpected user value: ${author}`);
+    return '';
+  }
+  static getRsubreddit(subreddit: Subreddit | string) {
+    if (subreddit as Subreddit) {
+      return (<Subreddit>subreddit).rname;
+    }
+    if (typeof subreddit == 'string') {
+      return Subreddit.subredditWithPrefix(subreddit);
+    }
+    console.error(`Unexpected user value: ${subreddit}`);
+    return '';
+  }
   get url() {
     return this.id + '/' + this.titleUrl;
+  }
+}
+export class PostRest {
+  public images: PostImage[] | undefined;
+
+  constructor(
+    public subreddit: string,
+    public author: string,
+    public title: string,
+    public id: string,
+    public titleUrl: string,
+    public upvotes: number,
+    public downvotes: number,
+    public comments: Comment[],
+    public text?: string,
+    optional?: { images?: PostImage[] }) {
+    this.upvotes = 0;
+    this.downvotes = 0;
   }
 }

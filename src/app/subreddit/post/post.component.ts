@@ -56,5 +56,12 @@ export class PostComponent implements OnInit {
     this.mousePosition.x = event.screenX;
     this.mousePosition.y = event.screenY;
   }
+  getSubredditName(): string {
+    return this.post ? Post.getRsubreddit(this.post.subreddit) : '';
+  }
+  getUserName(): string {
+    // console.log(Post.getUuser(this.post.author));
+    return this.post ? Post.getUuser(this.post.author) : '';
+  }
 
 }

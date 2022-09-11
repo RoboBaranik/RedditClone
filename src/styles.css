@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 :root {
   --font-size: 12px;
+  --font-size-h2: 24px;
   --font-size-post-metadata: 11px;
   --font-size-comment-metadata: 14px;
   --border-radius: 5px;
@@ -38,6 +39,12 @@ img {
 
 * {
   box-sizing: border-box;
+}
+
+h2 {
+  font-family: 'YouTube Sans', Roboto, sans-serif !important;
+  font-weight: bold !important;
+  font-size: var(--font-size-h2) !important;
 }
 
 /* app-root,

@@ -8,7 +8,11 @@ export class User {
   ) { }
 
   get uname() {
-    return 'u/' + this.name;
+    return User.usernameWithPrefix(this.name);
+  }
+
+  static usernameWithPrefix(username: string) {
+    return 'u/' + username;
   }
 
   // isPasswordCorrect(givenPassword: string): boolean {

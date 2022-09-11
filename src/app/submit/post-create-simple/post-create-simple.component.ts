@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { User } from 'src/app/auth/user';
 import { UserService } from 'src/app/auth/user.service';
 
@@ -9,13 +10,16 @@ import { UserService } from 'src/app/auth/user.service';
 })
 export class PostCreateSimpleComponent implements OnInit {
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private router: Router) { }
 
   ngOnInit(): void {
   }
 
   getUser(): User | undefined {
     return this.userService.user;
+  }
+  createPost(): void {
+    this.router.navigate(["submit"]);
   }
 
 }

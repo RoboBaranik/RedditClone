@@ -10,7 +10,10 @@ export class UsernameExistsValidator implements AsyncValidator {
 
   validate(control: AbstractControl): Observable<ValidationErrors | null> {
     return this.dbService.getUserByUsername(control.value).pipe(map((response) => {
-      return Object.entries(response).length > 0 ? { exists: 'true' } : null;
+      if (response) {
+        return { exists: 'true' };
+      }
+      return null;
     }));
   }
 }

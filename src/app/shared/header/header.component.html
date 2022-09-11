@@ -1,5 +1,5 @@
 <div class="header">
-  <div class="reddit-logo">
+  <a class="reddit-logo non-text" [routerLink]="['/']">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="reddit-logo-pic">
       <g>
         <circle fill="#FF4500" cx="10" cy="10" r="10"></circle>
@@ -9,7 +9,7 @@
       </g>
     </svg>
     <span class="reddit-logo-name">reddit</span>
-  </div>
+  </a>
   <span class="dropdown">dropdown</span>
   <span class="searchbar">searchbar</span>
   <a class="user-div non-text" *ngIf="loggedUser" (click)="logOut()">

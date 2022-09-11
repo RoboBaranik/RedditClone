@@ -7,7 +7,6 @@ import { BannerComponent } from './shared/banner/banner.component';
 import { PostListComponent } from './subreddit/post-list/post-list.component';
 import { PostComponent } from './subreddit/post/post.component';
 import { WallSidebarComponent } from './shared/wall-sidebar/wall-sidebar.component';
-import { PostCreateComponent } from './subreddit/post-create/post-create.component';
 import { PostFilterComponent } from './subreddit/post-filter/post-filter.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -24,7 +23,8 @@ import { PostDetailComponent } from './post-detail/post-detail/post-detail.compo
 import { CommentComponent } from './post-detail/comment/comment.component';
 import { AuthComponent } from './auth/auth.component';
 import { UserService } from './auth/user.service';
-import { PostCreateSimpleComponent } from './subreddit/post-create/post-create-simple/post-create-simple.component';
+import { PostCreateSimpleComponent } from './submit/post-create-simple/post-create-simple.component';
+import { PostCreateComponent } from './submit/post-create/post-create.component';
 import { SubmitLayoutComponent } from './submit/submit-layout/submit-layout.component';
 
 @NgModule({

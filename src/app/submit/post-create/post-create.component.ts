@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { PostService } from '../post/post.service';
+import { PostService } from 'src/app/subreddit/post/post.service';
 
 @Component({
   selector: 'post-create',
@@ -40,7 +40,6 @@ export class PostCreateComponent implements OnInit {
     } catch (error) {
       this.postCreateForm.reset();
     }
-    console.log(this.postService.getPostAll());
   }
   imageChanged() {
     var images = <FormArray>this.postCreateForm.get('postImages');

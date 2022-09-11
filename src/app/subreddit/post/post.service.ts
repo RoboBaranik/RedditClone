@@ -1,7 +1,10 @@
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Subject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
+import { DatabaseService } from "src/app/shared/database.service";
 import { UserService } from "../../auth/user.service";
 import { Comment } from "../../post-detail/comment/comment";
+import { Subreddit } from "../subreddit";
 import { Post } from "./post";
 import { PostImage } from "./post-image";
 
@@ -9,10 +12,10 @@ import { PostImage } from "./post-image";
 export class PostService {
 
   postList: Post[] = [];
-  postListSub: Subject<Post[]> = new Subject<Post[]>();
+  postListSub: BehaviorSubject<Post[]> = new BehaviorSubject<Post[]>([]);
 
-  constructor(private userService: UserService) {
-    this.postList.push(
+  constructor(private userService: UserService, private dbService: DatabaseService, private http: HttpClient) {
+    /*this.postList.push(
       new Post('r/Reddit', 'u/redditor', 'A nice title for a post', 'This is a description of a post. Should be clear enough. :)'),
       new Post('r/leagueoflegends', 'u/someone', 'Hmm, what is this?', '', { images: [new PostImage('https://i.redd.it/i43jvn2ymjj91.jpg', 'What')] }),
       new Post('r/Important', 'u/yasuoplayer', 'What?', 'Ahh yes, I almost forgot. This is really important description of my post. Never delete it. Please :)'),
@@ -26,16 +29,20 @@ export class PostService {
       
       Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Fusce molestie, sem volutpat sagittis rhoncus, lorem ipsum vehicula eros, vitae commodo dui turpis ac nisi. Donec non commodo tellus. Aenean luctus urna vitae aliquet semper. Quisque sit amet arcu posuere, sollicitudin quam ut, aliquet mauris. Sed pulvinar purus odio, a maximus quam gravida eu. Nunc in eros nec ante tempor semper. Donec sit amet ultrices velit. Donec sed lectus nec ligula sollicitudin gravida ac in lectus. Ut et elementum sapien. Nulla rhoncus lacinia urna at placerat. Integer felis ipsum, pharetra sed metus id, pretium malesuada tortor. Suspendisse sapien nulla, sollicitudin eu dolor a, vehicula fringilla metus. Donec auctor, tellus ac vulputate dapibus, nibh diam ultrices lorem, at placerat leo velit molestie diam.`),
       new Post('r/Empty', 'u/voda', 'Post with no text')
-    );
+    );*/
   }
 
   createPost(title: string, text?: string): Post {
     if (!this.userService.user) {
       throw new Error('Please log in!');
     }
-    var newPost = new Post('r/Reddit', this.userService.user.name, title, text);
-    this.postList.push(newPost);
-    this.postListSub.next(this.postList);
+    var newPost = new Post(new Subreddit('Reddit'), this.userService.user, title, text);
+    this.dbService.createPost(newPost).subscribe({
+      next: post => console.log(post),
+      error: error => console.error(error)
+    });
+    // this.postList.push(newPost);
+    // this.postListSub.next(this.postList);
     return newPost;
   }
   getPostByListIndex(id: number) {
@@ -44,8 +51,8 @@ export class PostService {
   getPost(postId: string, postTitleUrl: string) {
     return this.postList.find(post => post.id === postId && post.titleUrl.localeCompare(postTitleUrl) === 0);
   }
-  getPostAll() {
-    return this.postList.slice();
+  getPostAll(): void {
+    this.dbService.getPostAll(20).subscribe(posts => this.postListSub.next(posts));
   }
   editPost(id: number, updatedPost: Post) {
     this.postList[id] = updatedPost;
