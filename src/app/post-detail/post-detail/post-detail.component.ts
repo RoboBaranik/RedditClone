@@ -15,8 +15,8 @@ import { Comment } from '../comment/comment';
 export class PostDetailComponent implements OnInit {
 
   post?: Post;
-  subreddit?: string = '     ';
-  user?: string = '     ';
+  private static PLACEHOLDER_SUBREDDIT: string = 'r/Reddit';
+  private static PLACEHOLDER_USERNAME: string = 'u/username';
 
   constructor(
     private postService: PostService,
@@ -37,7 +37,8 @@ export class PostDetailComponent implements OnInit {
           // if (!post.comments) {
           //   post.comments = [];
           // }
-          this.post = post;
+          setTimeout(() => this.post = post, 5000);
+          // this.post = post;
           var commentTexts = ['Test of the comments', 'Ahh, I see...', 'I did nazi that', 'Spanish inquisition', `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus vehicula venenatis erat, rutrum consequat dolor bibendum et. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce interdum erat at odio bibendum fringilla. Mauris suscipit lacinia turpis, sit amet porttitor felis semper sed. Cras fringilla vulputate ultrices. Cras ac viverra mauris. Donec a tincidunt nulla, vel mattis enim.`];
           // this.mockComments(this.post, commentTexts);
           // this.postService.addComment(this.post, new Comment(this.post, new User('u/commenternumber1', 'abc', '', 0), 'Test of the comments'));
@@ -61,15 +62,10 @@ export class PostDetailComponent implements OnInit {
   // }
 
   getSubredditName(): string {
-    this.subreddit = this.post ? Post.getRsubreddit(this.post.subreddit) : '';
-    return this.subreddit;
+    return this.post ? Post.getRsubreddit(this.post.subreddit) : PostDetailComponent.PLACEHOLDER_SUBREDDIT;
   }
   getUserName(): string {
-    if (this.post) {
-      this.user = this.post ? Post.getUuser(this.post.author) : '';
-      return this.user;
-    }
-    return '';
+    return this.post ? Post.getUuser(this.post.author) : PostDetailComponent.PLACEHOLDER_USERNAME;
   }
 
 }

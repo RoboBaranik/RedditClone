@@ -11,6 +11,7 @@ export class Post {
   public downvotes: number;
   public id: string;
   public titleUrl: string = '';
+  public timeCreated: Date;
   public comments: Comment[] = [];
 
   constructor(
@@ -18,11 +19,20 @@ export class Post {
     public author: User | string,
     public title: string,
     public text?: string,
-    optional?: { images?: PostImage[], titleUrl?: string }) {
+    optional?: { images?: PostImage[], titleUrl?: string, id?: string, timeCreated?: Date }) {
     this.images = optional?.images;
     this.upvotes = 0;
     this.downvotes = 0;
-    this.id = this.generateId();
+    if (!optional?.id) {
+      this.id = this.generateId();
+    } else {
+      this.id = optional.id;
+    }
+    if (!optional?.timeCreated) {
+      this.timeCreated = new Date();
+    } else {
+      this.timeCreated = optional.timeCreated;
+    }
     if (!optional?.titleUrl) {
       this.generateTitleUrl();
     } else {

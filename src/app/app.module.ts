@@ -26,6 +26,7 @@ import { UserService } from './auth/user.service';
 import { PostCreateSimpleComponent } from './submit/post-create-simple/post-create-simple.component';
 import { PostCreateComponent } from './submit/post-create/post-create.component';
 import { SubmitLayoutComponent } from './submit/submit-layout/submit-layout.component';
+import { TimePastPipe } from 'ng-time-past-pipe';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { SubmitLayoutComponent } from './submit/submit-layout/submit-layout.comp
     MatButtonModule,
     MatInputModule,
     MatIconModule,
-    HttpClientModule
+    HttpClientModule,
+    TimePastPipe
   ],
   providers: [{
     provide: APP_INITIALIZER,

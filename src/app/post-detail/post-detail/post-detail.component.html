@@ -14,10 +14,11 @@
   <div class="content">
     <div class="metadata">
       <a class="sub-image"></a>
-      <a class="sub-name" [routerLink]="'/'+getSubredditName()">{{getSubredditName()}}</a>
+      <a class="sub-name" [routerLink]="post ? '/'+getSubredditName() : null">{{getSubredditName()}}</a>
       <span>|</span>
-      <span>Posted by <a [routerLink]="'/'+getUserName()">{{getUserName()}}</a></span>
-      <span>5 min ago</span>
+      <span>Posted by <a [routerLink]="post ? '/'+getUserName() : null">{{getUserName()}}</a></span>
+      <span *ngIf="!!post">{{post.timeCreated.toISOString() | timePast}}</span>
+      <span *ngIf="!post">now</span>
     </div>
     <div>
       <h2 class="post-title">{{post?.title}}</h2>
