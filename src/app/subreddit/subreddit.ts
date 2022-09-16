@@ -7,4 +7,7 @@ export class Subreddit {
   static subredditWithPrefix(subreddit: string) {
     return 'r/' + subreddit;
   }
+  static clone(original: Subreddit) {
+    return new Subreddit(original.name, original.avatarUrl);
+  }
 }

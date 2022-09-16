@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, UntypedFormControl, UntypedFormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
 import { DatabaseService } from '../shared/database.service';
@@ -14,8 +14,8 @@ import { UserService } from './user.service';
 })
 export class AuthComponent implements OnInit {
 
-  loginForm: FormGroup;
-  signupForm: FormGroup;
+  loginForm: UntypedFormGroup;
+  signupForm: UntypedFormGroup;
   confirmPasswordValidator?: ValidatorFn;
   allAuthStates = AuthType;
   authState: AuthType = AuthType.UNDEFINED;
@@ -70,29 +70,29 @@ export class AuthComponent implements OnInit {
     this.signupForm.valueChanges.subscribe(reset);
     this.loginForm.valueChanges.subscribe(reset);
   }
-  initLoginForm(): FormGroup {
-    const emailControl = new FormControl(null);
+  initLoginForm(): UntypedFormGroup {
+    const emailControl = new UntypedFormControl(null);
     emailControl.statusChanges.subscribe(status => this.handleBasicError('email', emailControl));
 
-    const passwordControl = new FormControl(null, Validators.pattern(/\S+/));
+    const passwordControl = new UntypedFormControl(null, Validators.pattern(/\S+/));
     passwordControl.statusChanges.subscribe(status => this.handleBasicError('password', passwordControl));
 
-    return new FormGroup({
+    return new UntypedFormGroup({
       email: emailControl,
       password: passwordControl
     });
   }
-  initSignupForm(): FormGroup {
-    const nameControl = new FormControl(null, {
+  initSignupForm(): UntypedFormGroup {
+    const nameControl = new UntypedFormControl(null, {
       validators: [Validators.pattern(/^[a-zA-Z0-9-_]+$/)],
       asyncValidators: [this.userExistsValidator.validate.bind(this.userExistsValidator)]
     });
     nameControl.statusChanges.subscribe(status => this.handleBasicError('name', nameControl));
 
-    const emailControl = new FormControl(null);
+    const emailControl = new UntypedFormControl(null);
     emailControl.statusChanges.subscribe(status => this.handleBasicError('email', emailControl));
 
-    const passwordControl = new FormControl(null, Validators.pattern(/\S+/));
+    const passwordControl = new UntypedFormControl(null, Validators.pattern(/\S+/));
     passwordControl.valueChanges.subscribe(value => {
       if (value) {
         if (this.confirmPasswordValidator) {
@@ -105,10 +105,10 @@ export class AuthComponent implements OnInit {
     });
     passwordControl.statusChanges.subscribe(status => this.handleBasicError('password', passwordControl));
 
-    const confirmPasswordControl = new FormControl(null, Validators.pattern(/\S+/));
+    const confirmPasswordControl = new UntypedFormControl(null, Validators.pattern(/\S+/));
     confirmPasswordControl.statusChanges.subscribe(status => this.handleBasicError('confirmPassword', confirmPasswordControl));
 
-    return new FormGroup({
+    return new UntypedFormGroup({
       name: nameControl,
       email: emailControl,
       password: passwordControl,
@@ -207,7 +207,7 @@ export class AuthComponent implements OnInit {
         break;
     }
   }
-  handleBasicError(controlName: string, control: FormControl) {
+  handleBasicError(controlName: string, control: UntypedFormControl) {
     if (!control.errors) {
       this.getErrorMessages()[controlName] = '';
       return;
@@ -227,17 +227,17 @@ export class AuthComponent implements OnInit {
       case AuthType.SIGNUP:
       case AuthType.UNDEFINED:
         this.controlNames.signup.forEach(controlName => {
-          this.handleBasicError(controlName, this.signupForm.controls[controlName] as FormControl);
+          this.handleBasicError(controlName, this.signupForm.controls[controlName] as UntypedFormControl);
         });
         break;
       case AuthType.LOGIN:
         this.controlNames.login.forEach(controlName => {
-          this.handleBasicError(controlName, this.loginForm.controls[controlName] as FormControl);
+          this.handleBasicError(controlName, this.loginForm.controls[controlName] as UntypedFormControl);
         });
         break;
     }
   }
-  getFormControlOrGroupByErrorType(name: string): FormControl | FormGroup {
+  getFormControlOrGroupByErrorType(name: string): UntypedFormControl | UntypedFormGroup {
     switch (this.authState) {
       default:
       case AuthType.SIGNUP:
@@ -245,22 +245,22 @@ export class AuthComponent implements OnInit {
         if (name === 'generic' || !this.signupForm.controls[name]) {
           return this.signupForm;
         }
-        return this.signupForm.controls[name] as FormControl;
+        return this.signupForm.controls[name] as UntypedFormControl;
       case AuthType.LOGIN:
         if (name === 'generic' || !this.loginForm.controls[name]) {
           return this.loginForm;
         }
-        return this.loginForm.controls[name] as FormControl;
+        return this.loginForm.controls[name] as UntypedFormControl;
     }
   }
-  getFormControlByErrorType(name: string): FormControl {
+  getFormControlByErrorType(name: string): UntypedFormControl {
     switch (this.authState) {
       default:
       case AuthType.SIGNUP:
       case AuthType.UNDEFINED:
-        return this.signupForm.controls[name] as FormControl;
+        return this.signupForm.controls[name] as UntypedFormControl;
       case AuthType.LOGIN:
-        return this.loginForm.controls[name] as FormControl;
+        return this.loginForm.controls[name] as UntypedFormControl;
     }
   }
   getErrorMessages(): { [key: string]: string } {

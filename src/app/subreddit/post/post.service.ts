@@ -5,7 +5,7 @@ import { DatabaseService } from "src/app/shared/database.service";
 import { UserService } from "../../auth/user.service";
 import { Comment } from "../../post-detail/comment/comment";
 import { Subreddit } from "../subreddit";
-import { Post } from "./post";
+import { Post, Vote } from "./post";
 import { PostImage } from "./post-image";
 
 @Injectable({ providedIn: 'root' })
@@ -32,11 +32,11 @@ export class PostService {
     );*/
   }
 
-  createPost(title: string, text?: string): Post {
+  createPost(title: string, text?: string, images?: PostImage[]): Post {
     if (!this.userService.user) {
       throw new Error('Please log in!');
     }
-    var newPost = new Post(new Subreddit('Reddit'), this.userService.user, title, text);
+    var newPost = new Post(new Subreddit('Reddit'), this.userService.user, title, text, { images: images });
     this.dbService.createPost(newPost).subscribe({
       next: post => console.log(post),
       error: error => console.error(error)
@@ -55,9 +55,15 @@ export class PostService {
   getPostAll(): void {
     this.dbService.getPostAll(20).subscribe(posts => this.postListSub.next(posts));
   }
-  editPost(id: number, updatedPost: Post) {
-    this.postList[id] = updatedPost;
-    this.postListSub.next(this.postList);
+  editPost(updatedPost: Post) {
+    // this.postList[id] = updatedPost;
+    this.dbService.updatePost(updatedPost).subscribe(post => {
+      if (post) {
+        this.postListSub.next(this.postList);
+      } else {
+        console.log(`Post update failed. Post ${updatedPost.author}`)
+      }
+    })
   }
   deletePost(id: number) {
     this.postList.splice(id, 1);
@@ -72,12 +78,21 @@ export class PostService {
       Post.addComment(post1, comment);
     });
   }
-  upvotePost(post: Post) {
-    this.updatePost(post, (post1: Post) => post1.upvotes++);
+  votePost(post: Post, vote: Vote) {
+    const user = this.userService.user;
+    if (user) {
+      this.updatePost(post, (post1: Post) => {
+        if (vote === Vote.NOT_VOTED) {
+          delete post1.votes[user.id];
+        } else {
+          post1.votes[user.id] = vote;
+        }
+      });
+    } else {
+      console.error('Not logged in.');
+    }
   }
-  downvotePost(post: Post) {
-    this.updatePost(post, (post1: Post) => post1.downvotes++);
-  }
+
   private updatePost(post: Post, f: (halo: Post) => void) {
     this.getPost(post.id, post.titleUrl).subscribe(foundPost => {
       if (foundPost) {

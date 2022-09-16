@@ -60,11 +60,26 @@ export class PostComponent implements OnInit {
     this.mousePosition.y = event.screenY;
   }
   getSubredditName(): string {
-    return this.post ? Post.getRsubreddit(this.post.subreddit) : '';
+    if (this.post) {
+      if (this.post.subreddit) {
+        return Post.getRsubreddit(this.post.subreddit);
+      }
+      if (this.post.subredditName) {
+        return Post.getRsubreddit(this.post.subredditName);
+      }
+    }
+    return Post.PLACEHOLDER_SUBREDDIT;
   }
   getUserName(): string {
-    // console.log(Post.getUuser(this.post.author));
-    return this.post ? Post.getUuser(this.post.author) : '';
+    if (this.post) {
+      if (this.post.author) {
+        return Post.getUuser(this.post.author);
+      }
+      if (this.post.subredditName) {
+        return Post.getUuser(this.post.authorName);
+      }
+    }
+    return Post.PLACEHOLDER_USERNAME;
   }
 
 }

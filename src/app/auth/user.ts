@@ -14,6 +14,9 @@ export class User {
   static usernameWithPrefix(username: string) {
     return 'u/' + username;
   }
+  static clone(original: User) {
+    return new User(original.id, original.name, original.email, original.avatarUrl, original.karma);
+  }
 
   // isPasswordCorrect(givenPassword: string): boolean {
   //   return this._password.localeCompare(givenPassword) === 0;

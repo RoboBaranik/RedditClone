@@ -62,10 +62,37 @@ export class PostDetailComponent implements OnInit {
   // }
 
   getSubredditName(): string {
-    return this.post ? Post.getRsubreddit(this.post.subreddit) : PostDetailComponent.PLACEHOLDER_SUBREDDIT;
+    if (this.post) {
+      if (this.post.subreddit) {
+        return Post.getRsubreddit(this.post.subreddit);
+      }
+      if (this.post.subredditName) {
+        return Post.getRsubreddit(this.post.subredditName);
+      }
+    }
+    return Post.PLACEHOLDER_SUBREDDIT;
   }
   getUserName(): string {
-    return this.post ? Post.getUuser(this.post.author) : PostDetailComponent.PLACEHOLDER_USERNAME;
+    if (this.post) {
+      if (this.post.author) {
+        return Post.getUuser(this.post.author);
+      }
+      if (this.post.subredditName) {
+        return Post.getUuser(this.post.authorName);
+      }
+    }
+    return Post.PLACEHOLDER_USERNAME;
+  }
+  getTimeCreated(): string {
+    if (this.post) {
+      if (this.post.timeCreated) {
+        return this.post.timeCreated.toISOString();
+      }
+      if (this.post.timeCreatedString) {
+        return this.post.timeCreatedString;
+      }
+    }
+    return Post.PLACEHOLDER_TIME_CREATED;
   }
 
 }

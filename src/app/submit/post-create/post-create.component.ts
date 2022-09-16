@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { PostImage } from 'src/app/subreddit/post/post-image';
 import { PostService } from 'src/app/subreddit/post/post.service';
 
 @Component({
@@ -11,19 +12,19 @@ export class PostCreateComponent implements OnInit {
 
   private static titleMaxLength: number = 300;
 
-  postCreateForm: FormGroup = new FormGroup({
-    'title': new FormControl(null, [
+  postCreateForm: FormGroup<{ title: FormControl<string | null>, text: FormControl<string | null>, postImages: FormArray<FormGroup<{ title: FormControl<string | null>, url: FormControl<string | null> }>> }> = new FormGroup<{ title: FormControl<string | null>, text: FormControl<string | null>, postImages: FormArray<FormGroup<{ title: FormControl<string | null>, url: FormControl<string | null> }>> }>({
+    'title': new FormControl<string | null>(null, [
       Validators.required,
       Validators.maxLength(PostCreateComponent.titleMaxLength),
       Validators.pattern('^[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF\\d\\-!\\$%\\^&\\*\\(\\)_\\+|~=`\\{\\}\\[\\]:";\'<>\\?,\\.\\/ ]+$')
     ]),
-    'text': new FormControl(null, [
+    'text': new FormControl<string | null>(null, [
       Validators.maxLength(10000)
     ]),
-    'postImages': new FormArray([
-      new FormGroup({
-        'title': new FormControl(null),
-        'url': new FormControl(null)
+    'postImages': new FormArray<FormGroup<{ title: FormControl<string | null>, url: FormControl<string | null> }>>([
+      new FormGroup<{ title: FormControl<string | null>, url: FormControl<string | null> }>({
+        'title': new FormControl<string | null>(null),
+        'url': new FormControl<string | null>(null)
       })
     ])
   });
@@ -35,11 +36,25 @@ export class PostCreateComponent implements OnInit {
   }
 
   createPost() {
-    try {
-      this.postService.createPost(this.postCreateForm.value['title'], this.postCreateForm.value['text']);
-    } catch (error) {
-      this.postCreateForm.reset();
+    // try {
+    const title = this.postCreateForm.value['title'];
+    const text = this.postCreateForm.value['text'];
+    var images: PostImage[] = [];
+    var imagesControls = <FormArray>this.postCreateForm.get('postImages');
+    imagesControls.controls.forEach((image, index) => {
+      var imageGroup = <FormGroup>image;
+      var title = <FormControl>imageGroup.controls['title'];
+      var url = <FormControl>imageGroup.controls['url'];
+      images.push(new PostImage(url.value, title.value));
+    });
+    if (title && text) {
+      this.postService.createPost(title, text, images);
+      console.log('Creating...');
     }
+    // } catch (error) {
+    // this.postCreateForm.reset();
+    // console.log('Resetting...');
+    // }
   }
   imageChanged() {
     var images = <FormArray>this.postCreateForm.get('postImages');
