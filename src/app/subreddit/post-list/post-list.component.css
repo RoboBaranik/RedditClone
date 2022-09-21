@@ -1,7 +1,30 @@
-.post-list>* {
+/* .post-list>* {
   background-color: var(--frontground-color);
 }
 
 .post-list>app-post {
   background-color: var(--frontground-back-color);
+} */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+}
+
+.loading-hint {
+  font-weight: var(--fw-medium);
+  opacity: 0.75;
+  margin: 16px 0 8px 0;
+}
+
+.loading-error {
+  font-weight: var(--fw-medium);
+  margin: 16px 0 8px 0;
+  color: #f00;
+}
+
+.loading-error-icon {
+  width: 40px;
+  height: 40px;
 }

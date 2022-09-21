@@ -47,8 +47,8 @@ export class PostCreateComponent implements OnInit {
       var url = <FormControl>imageGroup.controls['url'];
       images.push(new PostImage(url.value, title.value));
     });
-    if (title && text) {
-      this.postService.createPost(title, text, images);
+    if (title) {
+      this.postService.createPost(title, text ? text : '', images);
       console.log('Creating...');
     }
     // } catch (error) {

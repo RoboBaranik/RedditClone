@@ -11,8 +11,8 @@ import { PostImage } from "./post-image";
 @Injectable({ providedIn: 'root' })
 export class PostService {
 
-  postList: Post[] = [];
-  postListSub: BehaviorSubject<Post[]> = new BehaviorSubject<Post[]>([]);
+  postList: { [key: string]: Post } = {};
+  postListSub: BehaviorSubject<{ [key: string]: Post }> = new BehaviorSubject<{ [key: string]: Post }>({});
 
   constructor(private userService: UserService, private dbService: DatabaseService, private http: HttpClient) {
     /*this.postList.push(
@@ -52,21 +52,28 @@ export class PostService {
     return this.dbService.getPostById(postId, postTitleUrl);
     // return this.postList.find(post => post.id === postId && post.titleUrl.localeCompare(postTitleUrl) === 0);
   }
-  getPostAll(): void {
-    this.dbService.getPostAll(20).subscribe(posts => this.postListSub.next(posts));
+  getPostAll(limit?: number): void {
+    this.dbService.getPostAll(limit).subscribe(posts => this.postListSub.next(posts));
   }
   editPost(updatedPost: Post) {
     // this.postList[id] = updatedPost;
     this.dbService.updatePost(updatedPost).subscribe(post => {
       if (post) {
+        this.postList[post.getPrimaryKey()] = post;
         this.postListSub.next(this.postList);
+        // const oldPostIndex = this.postList.findIndex(post1 => post1.isSame(post));
+        // if (oldPostIndex >= 0) {
+        //   this.postList[oldPostIndex] = post;
+        //   this.postListSub.next(this.postList);
+        // }
       } else {
         console.log(`Post update failed. Post ${updatedPost.author}`)
       }
     })
   }
-  deletePost(id: number) {
-    this.postList.splice(id, 1);
+  deletePost(post: Post) {
+    delete this.postList[post.getPrimaryKey()];
+    // this.postList.splice(id, 1);
     this.postListSub.next(this.postList);
   }
 
@@ -74,32 +81,37 @@ export class PostService {
 
 
   addComment(post: Post, comment: Comment) {
-    this.updatePost(post, (post1: Post) => {
-      Post.addComment(post1, comment);
-    });
+    const user = this.userService.user;
+    if (user) {
+      const clone = Post.clone(post);
+      Post.addComment(clone, comment);
+      this.editPost(clone);
+    } else {
+      console.error('Not logged in.');
+    }
   }
   votePost(post: Post, vote: Vote) {
     const user = this.userService.user;
     if (user) {
-      this.updatePost(post, (post1: Post) => {
-        if (vote === Vote.NOT_VOTED) {
-          delete post1.votes[user.id];
-        } else {
-          post1.votes[user.id] = vote;
-        }
-      });
+      const clone = Post.clone(post);
+      if (vote === Vote.NOT_VOTED) {
+        delete clone.votes[user.id];
+      } else {
+        clone.votes[user.id] = vote;
+      }
+      this.editPost(clone);
     } else {
       console.error('Not logged in.');
     }
   }
 
-  private updatePost(post: Post, f: (halo: Post) => void) {
-    this.getPost(post.id, post.titleUrl).subscribe(foundPost => {
-      if (foundPost) {
-        f(foundPost);
-        this.postListSub.next(this.postList);
-      }
-    });
-  }
+  // private updatePost(post: Post, f: (halo: Post) => void) {
+  //   this.getPost(post.id, post.titleUrl).subscribe(foundPost => {
+  //     if (foundPost) {
+  //       f(foundPost);
+  //       this.postListSub.next(this.postList);
+  //     }
+  //   });
+  // }
 
 }

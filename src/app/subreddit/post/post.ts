@@ -164,6 +164,12 @@ export class Post {
     }
     this.timeCreated = undefined;
   }
+  getPrimaryKey(): string {
+    return `${this.id}_${this.titleUrl}`;
+  }
+  isSame(otherPost: Post): boolean {
+    return this.id === otherPost.id && this.titleUrl === otherPost.titleUrl;
+  }
   static clone(original: Post): Post {
     // if ((!original.subreddit && !original.subredditName)
     //   && (!original.author && !original.authorName)

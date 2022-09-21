@@ -95,29 +95,50 @@ export class DatabaseService {
       return of(undefined);
     }));;
   }
-  getPostAll(limit?: number): Observable<Post[]> {
-    const params = new HttpParams();
+  // TODO: Return as Map
+  getPostAll(limit?: number): Observable<{ [key: string]: Post }> {
+    var params = new HttpParams();
     if (limit && limit > 0) {
-      params.append('orderBy', '"$value"').append('limitToFirst', `"${limit}"`);
+      params = params.append('orderBy', '"$value"').append('limitToFirst', limit);
     }
 
     return this.http.get<{ [key: string]: Post }>(`${this._dbUrl}posts.json`,
       {
         params: params
-      }).pipe(map(posts => {
-        var postListClone: Post[] = [];
-        const postList = Object.values(posts);
-        postList.forEach(post => {
-          const postClonePromise = Post.clone(post).loadObjects(this);
-          if (postClonePromise) {
-            postClonePromise.then(loadedPost => postListClone.push(loadedPost));
-          }
-        });
-        return postListClone;
-      }), tap(posts => {
-        console.log('--- Loading posts ---')
-        console.log(posts);
-        console.log('');
-      }));
+      }).pipe(
+        // map(posts => {
+        //   var postListClone: { [key: string]: Post } = {};
+        //   Object.keys(posts).forEach((key) => {
+        //     postListClone[key] = Post.clone(posts[key]);
+        //   });
+        //   console.log(`Map: ${Object.keys(postListClone).length}`);
+        //   return postListClone;
+        // }),
+        mergeMap(posts => {
+          // const postList = Object.values(posts);
+          const promise = new Promise<{ [key: string]: Post }>(async (resolve, reject) => {
+            var postListClone: { [key: string]: Post } = {};
+            for (var key of Object.keys(posts)) {
+              const postClonePromise = Post.clone(posts[key]).loadObjects(this);
+              if (postClonePromise) {
+                postListClone[key] = await postClonePromise;
+              }
+            }
+            // for (var post of posts) {
+            //   const postClonePromise = Post.clone(post).loadObjects(this);
+            //   if (postClonePromise) {
+            //     postListClone.push(await postClonePromise);
+            //     // postClonePromise.then(loadedPost => postListClone.push(loadedPost));
+            //   }
+            // }
+            resolve(postListClone);
+          });
+
+          return defer(() => from(promise));
+        }), tap(posts => {
+          console.log('--- Loading posts ---')
+          console.log(posts);
+          console.log('');
+        }));
   }
 }

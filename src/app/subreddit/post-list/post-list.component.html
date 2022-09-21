@@ -1,5 +1,14 @@
-<div class="post-list">
+<div class="post-list" (scroll)="scrollHandler($event)">
   <post-create-simple *ngIf="!!getUser()"></post-create-simple>
   <post-filter></post-filter>
-  <app-post *ngFor="let post of posts" [post]="post"></app-post>
+  <app-post *ngFor="let post of postList" [post]="post"></app-post>
+  <div class="loading" *ngIf="!nothingLoaded">
+    <mat-progress-spinner class="example-margin" color="primary" mode="indeterminate" diameter="48">
+    </mat-progress-spinner>
+    <span class="loading-hint">Loading posts...</span>
+  </div>
+  <div class="loading" *ngIf="nothingLoaded">
+    <mat-icon class="loading-error-icon" svgIcon="error" [inline]="false" [color]="'warn'"></mat-icon>
+    <span class="loading-error">Error when loading posts, please try again later</span>
+  </div>
 </div>

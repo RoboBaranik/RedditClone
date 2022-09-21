@@ -26,7 +26,17 @@ import { UserService } from './auth/user.service';
 import { PostCreateSimpleComponent } from './submit/post-create-simple/post-create-simple.component';
 import { PostCreateComponent } from './submit/post-create/post-create.component';
 import { SubmitLayoutComponent } from './submit/submit-layout/submit-layout.component';
-import { TimePastPipe } from 'ng-time-past-pipe';
+import { CUSTOM_UPDATE_INTERVAL_GENERATOR, TimePastPipe, UpdateIntervalGenerator } from 'ng-time-past-pipe';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
+const updateIntervalGenerator: UpdateIntervalGenerator = (diff): number => {
+  console.log(diff);
+  if (diff.seconds < 60) {
+    console.log(10);
+    return 10;
+  }
+  return 60;
+}
 
 @NgModule({
   declarations: [
@@ -57,14 +67,22 @@ import { TimePastPipe } from 'ng-time-past-pipe';
     MatInputModule,
     MatIconModule,
     HttpClientModule,
-    TimePastPipe
+    TimePastPipe,
+    MatProgressSpinnerModule
   ],
-  providers: [{
-    provide: APP_INITIALIZER,
-    useFactory: (userService: UserService) => () => { return userService.autoLogIn(); },
-    deps: [UserService],
-    multi: true
-  }],
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (userService: UserService) => () => { return userService.autoLogIn(); },
+      deps: [UserService],
+      multi: true
+    },
+    {
+      provide: CUSTOM_UPDATE_INTERVAL_GENERATOR,
+      useValue: updateIntervalGenerator,
+      // multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

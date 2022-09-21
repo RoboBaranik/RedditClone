@@ -16,5 +16,8 @@ export class AppComponent {
     iconRegistry.addSvgIcon(
       'arrow_up',
       sanitizer.bypassSecurityTrustResourceUrl('assets/icons/arrow_up24.svg'));
+    iconRegistry.addSvgIcon(
+      'error',
+      sanitizer.bypassSecurityTrustResourceUrl('assets/icons/error40.svg'), { viewBox: '0 0 40 40' });
   }
 }
