@@ -4,7 +4,7 @@ import { ActivatedRoute, UrlSegment } from '@angular/router';
 @Component({
   selector: 'post-detail-layout',
   templateUrl: './post-detail-layout.component.html',
-  styleUrls: ['./post-detail-layout.component.css']
+  styleUrls: ['./post-detail-layout.component.scss']
 })
 export class PostDetailLayoutComponent implements OnInit {
   /* type: ContentType = ContentType.Reddit;

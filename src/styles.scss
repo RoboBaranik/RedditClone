@@ -1,9 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/theming';
+$custom-typography: mat-typography-config($font-family: var(--font-default));
+@include mat-core($custom-typography);
+
 :root {
   --font-size: 12px;
   --font-size-h2: 24px;
   --font-size-post-metadata: 11px;
   --font-size-comment-metadata: 14px;
+  --font-default: Rubik, sans-serif;
+  --font-simple: Roboto, sans-serif;
+  --font-title: 'YouTube Sans', Roboto, sans-serif;
   --border-radius: 5px;
   --upvote-bar-width: 36px;
   --mat-field-bottom-padding: 1.34375em;
@@ -23,7 +30,7 @@ body {
   height: 100%;
   background-color: var(--background-color);
   font-size: var(--font-size);
-  font-family: Roboto, sans-serif;
+  font-family: var(--font-default);
   font-weight: 400;
 }
 
@@ -42,7 +49,7 @@ img {
 }
 
 h2 {
-  font-family: 'YouTube Sans', Roboto, sans-serif !important;
+  font-family: var(--font-title) !important;
   font-weight: bold !important;
   font-size: var(--font-size-h2) !important;
 }

@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { BehaviorSubject, Observable, Subject, Subscription, tap } from "rxjs";
+import { BehaviorSubject, mergeMap, Observable, Subject, Subscription, tap } from "rxjs";
 import { environment } from "src/environments/environment";
 import { DatabaseService } from "../shared/database.service";
 import { AuthType } from "./auth.component";
@@ -37,10 +37,13 @@ export class UserService implements OnInit {
   private _users: User[] = [];
   private _logOutTimeout?: any;
 
-  signUp(username: string, email: string, password: string): Observable<FirebaseResponse> {
-    return this.formRequest(email, password, AuthType.SIGNUP).pipe(tap(response => {
-      this.dbService.createUser(new User(response.localId, username, email, this.getRandomAvatarUrl(), 0)).subscribe(user => console.log(`Created user ${user.name}`));
-    }));
+  signUp(username: string, email: string, password: string): Observable<User> {
+    return this.formRequest(email, password, AuthType.SIGNUP).pipe(
+      mergeMap(response => {
+        const userToCreate = new User(response.localId, username, email, this.getRandomAvatarUrl(), 0);
+        return this.dbService.createUser(userToCreate);
+      }),
+      tap(user => this.userUpdated.next(user)));
   }
 
   logIn(email: string, password: string): Observable<FirebaseResponse> {

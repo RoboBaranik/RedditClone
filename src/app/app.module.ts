@@ -30,9 +30,7 @@ import { CUSTOM_UPDATE_INTERVAL_GENERATOR, TimePastPipe, UpdateIntervalGenerator
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 const updateIntervalGenerator: UpdateIntervalGenerator = (diff): number => {
-  console.log(diff);
   if (diff.seconds < 60) {
-    console.log(10);
     return 10;
   }
   return 60;

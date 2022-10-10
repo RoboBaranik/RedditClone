@@ -32,7 +32,7 @@ export class DatabaseService {
       }));
   }
   getUserById(id: string): Observable<User> {
-    return this.http.get<User>(`${this._dbUrl}users/${id}.json`).pipe(map(user => User.clone(user)));;
+    return this.http.get<User>(`${this._dbUrl}users/${id}.json`).pipe(map(user => user ? User.clone(user) : user));
   }
   createPost(post: Post): Observable<Post | undefined> {
     const postClonePromise = Post.clone(post).loadObjects(this);

@@ -81,6 +81,19 @@
   font-weight: 700;
 }
 
+/* Variable */
+@font-face {
+  font-family: Rubik;
+  src: url('/assets/fonts/rubik/Rubik-VariableFont_wght.ttf') format('truetype');
+  font-style: normal;
+}
+
+@font-face {
+  font-family: Rubik;
+  src: url('/assets/fonts/rubik/Rubik-Italic-VariableFont_wght.ttf') format('truetype');
+  font-style: italic;
+}
+
 @font-face {
   font-family: "YouTube Sans";
   src: url("https://fonts.gstatic.com/s/youtubesans/v16/Qw38ZQNGEDjaO2m6tqIqX5E-AVS5_rSejo46_PCTRspJ0OosolrBEJL3HO_T7fE.woff2") format("woff2");

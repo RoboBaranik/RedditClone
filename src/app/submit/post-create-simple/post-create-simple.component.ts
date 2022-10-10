@@ -6,7 +6,7 @@ import { UserService } from 'src/app/auth/user.service';
 @Component({
   selector: 'post-create-simple',
   templateUrl: './post-create-simple.component.html',
-  styleUrls: ['./post-create-simple.component.css']
+  styleUrls: ['./post-create-simple.component.scss']
 })
 export class PostCreateSimpleComponent implements OnInit {
 

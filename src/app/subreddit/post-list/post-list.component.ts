@@ -8,7 +8,7 @@ import { PostService } from '../post/post.service';
 @Component({
   selector: 'post-list',
   templateUrl: './post-list.component.html',
-  styleUrls: ['./post-list.component.css']
+  styleUrls: ['./post-list.component.scss']
 })
 export class PostListComponent implements OnInit, OnDestroy {
 
@@ -53,6 +53,7 @@ export class PostListComponent implements OnInit, OnDestroy {
         this.loadingBuffer = setTimeout(() => {
           this.postService.getPostAll(this.loadedPosts + PostListComponent.postsToLoadAfterScroll);
           this.loadingBuffer = undefined;
+          this.scrollHandler(event);
         }, 500);
       }
     }

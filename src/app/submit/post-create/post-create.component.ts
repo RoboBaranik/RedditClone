@@ -6,7 +6,7 @@ import { PostService } from 'src/app/subreddit/post/post.service';
 @Component({
   selector: 'post-create',
   templateUrl: './post-create.component.html',
-  styleUrls: ['./post-create.component.css']
+  styleUrls: ['./post-create.component.scss']
 })
 export class PostCreateComponent implements OnInit {
 
