@@ -1,7 +1,4 @@
 /* You can add global styles to this file, and also import other style files */
-@import '~@angular/material/theming';
-$custom-typography: mat-typography-config($font-family: var(--font-default));
-@include mat-core($custom-typography);
 
 :root {
   --font-size: 12px;

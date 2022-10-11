@@ -67,12 +67,13 @@ export class DatabaseService {
     return defer(() => from(postClonePromise).pipe(mergeMap(postClone => {
       postClone.unloadObjects();
       return this.getPostById(postClone.id, postClone.titleUrl).pipe(mergeMap(postFound => {
-        if (!postFound) {
-          return this.http.put<Post>(`${this._dbUrl}posts/${postClone.id}_${postClone.titleUrl}.json`, postClone)
+        if (postFound) {
+          return this.http.put<Post>(`${this._dbUrl}posts/${postFound.id}_${postFound.titleUrl}.json`, postClone)
             .pipe(mergeMap(post => {
               const clone = Post.clone(post).loadObjects(this);
               if (clone) {
-                return clone;
+                return defer(() => from(clone));
+                // return clone;
               }
               return of(undefined);
             }));

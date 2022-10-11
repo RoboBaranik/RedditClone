@@ -29,7 +29,14 @@ export class Post {
     author: User | string,
     public title: string,
     public text?: string,
-    optional?: { images?: PostImage[], titleUrl?: string, id?: string, timeCreated?: Date }) {
+    optional?: {
+      images?: PostImage[],
+      titleUrl?: string,
+      id?: string,
+      timeCreated?: Date,
+      votes?: { [key: string]: Vote }
+    }
+  ) {
     if (typeof author == 'string') {
       this.authorName = author;
     } else {
@@ -43,7 +50,7 @@ export class Post {
       this.subredditName = subreddit.name;
     }
     this.images = optional && optional.images ? optional.images : [];
-    this.votes = {};
+    this.votes = (optional && optional.votes) ?? {};
     if (!optional?.id) {
       this.id = this.generateId();
     } else {
@@ -177,19 +184,26 @@ export class Post {
     //   console.error('Unable to clone. Missing fields.');
     //   return undefined;
     // }
-    const result = new Post(
-      original.subreddit ? original.subreddit : original.subredditName,
-      original.author ? original.author : original.authorName,
-      original.title,
-      original.text,
-      {
-        images: original.images,
-        titleUrl: original.titleUrl ? original.titleUrl : undefined,
-        id: original.id ? original.id : undefined,
-        timeCreated: original.timeCreated ? original.timeCreated : undefined
-      }
-    );
-    return result;
+    // console.log(original);
+    try {
+      const result = new Post(
+        original.subreddit ?? original.subredditName,
+        original.author ?? original.authorName,
+        original.title,
+        original.text,
+        {
+          images: original.images,
+          titleUrl: original.titleUrl ?? undefined,
+          id: original.id ?? undefined,
+          timeCreated: original.timeCreated ?? original.timeCreatedString ? new Date(original.timeCreatedString) : undefined,
+          votes: original.votes ?? {}
+        }
+      );
+      return result;
+    } catch (error) {
+      console.error(`Post has incorrect format: ${JSON.stringify(original)}`);
+      throw error;
+    }
     // const promise = new Promise<Post>(async (resolve, reject) => {
     //   const loaded = await Post.loadObjects(dbService, original);
     //   const result = new Post(

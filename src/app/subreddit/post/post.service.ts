@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Subject } from "rxjs";
+import { User } from "src/app/auth/user";
 import { DatabaseService } from "src/app/shared/database.service";
 import { UserService } from "../../auth/user.service";
 import { Comment } from "../../post-detail/comment/comment";
@@ -90,7 +91,7 @@ export class PostService {
       console.error('Not logged in.');
     }
   }
-  votePost(post: Post, vote: Vote) {
+  votePost(post: Post, vote: Vote): void {
     const user = this.userService.user;
     if (user) {
       const clone = Post.clone(post);
@@ -103,6 +104,25 @@ export class PostService {
     } else {
       console.error('Not logged in.');
     }
+  }
+  getVote(post: Post, user?: User): Vote | undefined {
+    if (!user) {
+      const currentUser = this.userService.user;
+      if (!currentUser) {
+        return undefined;
+      }
+      user = currentUser;
+    }
+    return post.votes[user.id] ?? Vote.NOT_VOTED;
+  }
+  getNewVoteState(oldVote: Vote, action: Vote): Vote {
+    if (action === Vote.NOT_VOTED) {
+      return oldVote;
+    }
+    if (action === oldVote) {
+      return Vote.NOT_VOTED;
+    }
+    return action;
   }
 
   // private updatePost(post: Post, f: (halo: Post) => void) {

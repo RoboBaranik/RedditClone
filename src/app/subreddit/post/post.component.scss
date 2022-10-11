@@ -1,3 +1,5 @@
+@import 'src/assets/theme.scss';
+
 .post {
   --post-max-height: 150px;
 
@@ -54,6 +56,24 @@ mat-icon {
   font-weight: 700;
 }
 
+#votes.upvoted {
+  color: mat-color($primary);
+  // filter: drop-shadow(1px 1px 1px mat-color($primary));
+}
+
+#votes.downvoted {
+  color: mat-color($warn);
+  // filter: drop-shadow(1px -1px 1px mat-color($warn));
+}
+
+.upvote.upvoted {
+  filter: drop-shadow(1px 1px 1px mat-color($primary));
+}
+
+.downvote.downvoted {
+  filter: drop-shadow(1px -1px 1px mat-color($warn));
+}
+
 .content {
   margin-left: var(--upvote-bar-width);
   background-color: var(--frontground-color);
@@ -63,6 +83,7 @@ mat-icon {
 }
 
 .metadata {
+  // font-family: var(--font-simple);
   font-size: var(--font-size-post-metadata);
   display: flex;
   flex-direction: row;

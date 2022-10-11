@@ -34,6 +34,7 @@
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
               "src/styles.scss",
+              "src/assets/theme.scss",
               "src/assets/fonts/custom_fonts.scss"
             ],
             "scripts": []

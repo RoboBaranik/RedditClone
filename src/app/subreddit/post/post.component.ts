@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { Router } from '@angular/router';
-import { Post } from './post';
+import { Post, Vote } from './post';
+import { PostService } from './post.service';
 
 @Component({
   selector: 'app-post',
@@ -11,6 +12,8 @@ import { Post } from './post';
 export class PostComponent implements OnInit {
 
   @Input() post!: Post;
+  voteTypes = Vote;
+  vote: Vote = Vote.NOT_VOTED;
 
   private ignoreOnClickElements: string[] = ['mat-icon', 'button', 'a'];
   private mousePosition: { x: number, y: number } = {
@@ -18,10 +21,16 @@ export class PostComponent implements OnInit {
     y: 0
   };
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private postService: PostService) {
   }
 
   ngOnInit(): void {
+    if (this.post) {
+      const vote = this.postService.getVote(this.post);
+      if (vote) {
+        this.vote = vote;
+      }
+    }
   }
 
   postClicked(event: MouseEvent): void {
@@ -43,10 +52,12 @@ export class PostComponent implements OnInit {
     this.navigateToDetails();
   }
   onUpvote() {
-
+    this.vote = this.postService.getNewVoteState(this.vote, Vote.UPVOTE);
+    this.postService.votePost(this.post, this.vote);
   }
   onDownvote() {
-
+    this.vote = this.postService.getNewVoteState(this.vote, Vote.DOWNVOTE);
+    this.postService.votePost(this.post, this.vote);
   }
   navigateToDetails() {
     const subreddit = this.getSubredditName();
