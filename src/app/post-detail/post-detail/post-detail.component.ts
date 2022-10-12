@@ -1,8 +1,8 @@
-import { ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { User } from 'src/app/auth/user';
 import { UserService } from 'src/app/auth/user.service';
-import { Post } from 'src/app/subreddit/post/post';
+import { Post, Vote } from 'src/app/subreddit/post/post';
 import { PostService } from 'src/app/subreddit/post/post.service';
 import { Subreddit } from 'src/app/subreddit/subreddit';
 import { Comment } from '../comment/comment';
@@ -12,9 +12,14 @@ import { Comment } from '../comment/comment';
   templateUrl: './post-detail.component.html',
   styleUrls: ['./post-detail.component.scss']
 })
-export class PostDetailComponent implements OnInit {
+export class PostDetailComponent implements OnInit, OnDestroy {
 
   post?: Post;
+  vote: Vote = Vote.NOT_VOTED;
+  voteTypes = Vote;
+  voteNumber: string = 'Vote';
+  refreshInterval?: NodeJS.Timeout;
+  private static POST_REFRESH_RATE = 10000;
   private static PLACEHOLDER_SUBREDDIT: string = 'r/Reddit';
   private static PLACEHOLDER_USERNAME: string = 'u/username';
 
@@ -32,19 +37,52 @@ export class PostDetailComponent implements OnInit {
       }
       const postId = url[2].path;
       const titleUrl = url[3].path;
-      const sub = this.postService.getPost(postId, titleUrl).subscribe(post => {
-        if (post) {
-          // if (!post.comments) {
-          //   post.comments = [];
-          // }
-          // setTimeout(() => this.post = post, 5000);
-          this.post = post;
-          var commentTexts = ['Test of the comments', 'Ahh, I see...', 'I did nazi that', 'Spanish inquisition', `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus vehicula venenatis erat, rutrum consequat dolor bibendum et. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce interdum erat at odio bibendum fringilla. Mauris suscipit lacinia turpis, sit amet porttitor felis semper sed. Cras fringilla vulputate ultrices. Cras ac viverra mauris. Donec a tincidunt nulla, vel mattis enim.`];
-          // this.mockComments(this.post, commentTexts);
-          // this.postService.addComment(this.post, new Comment(this.post, new User('u/commenternumber1', 'abc', '', 0), 'Test of the comments'));
-        }
-      });
+      this.refreshPost(postId, titleUrl);
+      this.refreshInterval = setInterval(() => {
+        console.log('Refreshing ... ' + titleUrl);
+        this.refreshPost(postId, titleUrl);
+      }, PostDetailComponent.POST_REFRESH_RATE);
     });
+  }
+  ngOnDestroy(): void {
+    if (this.refreshInterval) {
+      clearInterval(this.refreshInterval);
+    }
+  }
+  refreshPost(postId: string, titleUrl: string): void {
+    const sub = this.postService.getPost(postId, titleUrl).subscribe(post => {
+      if (post) {
+        // if (!post.comments) {
+        //   post.comments = [];
+        // }
+        // setTimeout(() => this.post = post, 5000);
+        this.post = post;
+        this.voteNumber = this.postService.getNumberOfUpvotes(post);
+        const vote = this.postService.getVote(post);
+        if (vote) {
+          this.vote = vote;
+        }
+        var commentTexts = ['Test of the comments', 'Ahh, I see...', 'I did nazi that', 'Spanish inquisition', `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus vehicula venenatis erat, rutrum consequat dolor bibendum et. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce interdum erat at odio bibendum fringilla. Mauris suscipit lacinia turpis, sit amet porttitor felis semper sed. Cras fringilla vulputate ultrices. Cras ac viverra mauris. Donec a tincidunt nulla, vel mattis enim.`];
+        // this.mockComments(this.post, commentTexts);
+        // this.postService.addComment(this.post, new Comment(this.post, new User('u/commenternumber1', 'abc', '', 0), 'Test of the comments'));
+      }
+    });
+  }
+
+  onUpvote(): void {
+    this.onVote(Vote.UPVOTE);
+  }
+  onDownvote(): void {
+    this.onVote(Vote.DOWNVOTE);
+  }
+  private onVote(voteAction: Vote): void {
+    if (!this.post) { return; }
+    const voteState = this.postService.getNewVoteState(this.vote, voteAction);
+    this.vote = voteState.newVote;
+    this.post.upvotes += voteState.upvoteDiff;
+    this.post.downvotes += voteState.downvoteDiff;
+    this.voteNumber = this.postService.getNumberOfUpvotes(this.post);
+    this.postService.votePost(this.post, this.vote);
   }
 
   // mockComments(post: Post, commentTexts: string[]): void {

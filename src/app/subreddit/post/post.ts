@@ -13,6 +13,8 @@ export class Post {
   public static PLACEHOLDER_TIME_CREATED: string = 'now';
 
   public images: PostImage[] | undefined;
+  public upvotes: number;
+  public downvotes: number;
   public votes: { [key: string]: Vote };
   public id: string;
   public titleUrl: string = '';
@@ -34,6 +36,8 @@ export class Post {
       titleUrl?: string,
       id?: string,
       timeCreated?: Date,
+      upvotes?: number,
+      downvotes?: number,
       votes?: { [key: string]: Vote }
     }
   ) {
@@ -50,6 +54,8 @@ export class Post {
       this.subredditName = subreddit.name;
     }
     this.images = optional && optional.images ? optional.images : [];
+    this.upvotes = (optional && optional.upvotes) ?? 0;
+    this.downvotes = (optional && optional.downvotes) ?? 0;
     this.votes = (optional && optional.votes) ?? {};
     if (!optional?.id) {
       this.id = this.generateId();
@@ -196,6 +202,8 @@ export class Post {
           titleUrl: original.titleUrl ?? undefined,
           id: original.id ?? undefined,
           timeCreated: original.timeCreated ?? original.timeCreatedString ? new Date(original.timeCreatedString) : undefined,
+          upvotes: original.upvotes ?? 0,
+          downvotes: original.downvotes ?? 0,
           votes: original.votes ?? {}
         }
       );

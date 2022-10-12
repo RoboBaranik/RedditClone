@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { PostImage } from 'src/app/subreddit/post/post-image';
 import { PostService } from 'src/app/subreddit/post/post.service';
 
@@ -30,7 +31,7 @@ export class PostCreateComponent implements OnInit {
   });
   imageControlsSize = 1;
 
-  constructor(private postService: PostService) { }
+  constructor(private postService: PostService, private router: Router) { }
 
   ngOnInit(): void {
   }
@@ -50,6 +51,7 @@ export class PostCreateComponent implements OnInit {
     if (title) {
       this.postService.createPost(title, text ? text : '', images);
       console.log('Creating...');
+      this.router.navigate(['/']);
     }
     // } catch (error) {
     // this.postCreateForm.reset();

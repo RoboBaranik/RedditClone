@@ -4,8 +4,8 @@
       <mat-icon class="upvote" [class.upvoted]="vote === voteTypes.UPVOTE" svgIcon="arrow_up" [inline]="true"
         [color]="vote === voteTypes.UPVOTE ? 'primary' : null"></mat-icon>
     </button>
-    <span id="votes" [class.upvoted]="vote === voteTypes.UPVOTE"
-      [class.downvoted]="vote === voteTypes.DOWNVOTE">99.9k</span>
+    <span id="votes" [class.upvoted]="vote === voteTypes.UPVOTE" [class.downvoted]="vote === voteTypes.DOWNVOTE"
+      [innerText]="voteNumber">Vote</span>
     <button mat-icon-button (click)="onDownvote()">
       <mat-icon class="downvote" [class.downvoted]="vote === voteTypes.DOWNVOTE" svgIcon="arrow_down" [inline]="true"
         [color]="vote === voteTypes.DOWNVOTE ? 'warn' : null">

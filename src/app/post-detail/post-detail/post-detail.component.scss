@@ -1,3 +1,5 @@
+@import 'src/assets/theme.scss';
+
 .post-detail {
   position: relative;
   min-height: 120px;
@@ -17,6 +19,24 @@
   position: absolute;
   /* border-radius: var(--border-radius) 0 0 0; */
   top: var(--border-radius);
+}
+
+#votes.upvoted {
+  color: mat-color($primary);
+  // filter: drop-shadow(1px 1px 1px mat-color($primary));
+}
+
+#votes.downvoted {
+  color: mat-color($warn);
+  // filter: drop-shadow(1px -1px 1px mat-color($warn));
+}
+
+.upvote.upvoted {
+  filter: drop-shadow(1px 1px 1px mat-color($primary));
+}
+
+.downvote.downvoted {
+  filter: drop-shadow(1px -1px 1px mat-color($warn));
 }
 
 mat-icon {

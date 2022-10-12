@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { Post, Vote } from './post';
@@ -9,11 +9,14 @@ import { PostService } from './post.service';
   templateUrl: './post.component.html',
   styleUrls: ['./post.component.scss']
 })
-export class PostComponent implements OnInit {
+export class PostComponent implements OnInit, OnDestroy {
 
   @Input() post!: Post;
   voteTypes = Vote;
   vote: Vote = Vote.NOT_VOTED;
+  voteNumber: string = 'Vote';
+  refreshInterval?: NodeJS.Timeout;
+  private static POST_REFRESH_RATE = 10000;
 
   private ignoreOnClickElements: string[] = ['mat-icon', 'button', 'a'];
   private mousePosition: { x: number, y: number } = {
@@ -26,11 +29,29 @@ export class PostComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.post) {
-      const vote = this.postService.getVote(this.post);
-      if (vote) {
-        this.vote = vote;
-      }
+      this.refreshPost(this.post.id, this.post.titleUrl);
+      this.refreshInterval = setInterval(() => {
+        console.log('Refreshing ... ' + this.post.titleUrl);
+        this.refreshPost(this.post.id, this.post.titleUrl);
+      }, PostComponent.POST_REFRESH_RATE);
     }
+  }
+  ngOnDestroy(): void {
+    if (this.refreshInterval) {
+      clearInterval(this.refreshInterval);
+    }
+  }
+  refreshPost(postId: string, titleUrl: string): void {
+    const sub = this.postService.getPost(postId, titleUrl).subscribe(post => {
+      if (post) {
+        this.post = post;
+        this.voteNumber = this.postService.getNumberOfUpvotes(post);
+        const vote = this.postService.getVote(post);
+        if (vote) {
+          this.vote = vote;
+        }
+      }
+    });
   }
 
   postClicked(event: MouseEvent): void {
@@ -51,12 +72,19 @@ export class PostComponent implements OnInit {
     }
     this.navigateToDetails();
   }
-  onUpvote() {
-    this.vote = this.postService.getNewVoteState(this.vote, Vote.UPVOTE);
-    this.postService.votePost(this.post, this.vote);
+  onUpvote(): void {
+    this.onVote(Vote.UPVOTE);
   }
-  onDownvote() {
-    this.vote = this.postService.getNewVoteState(this.vote, Vote.DOWNVOTE);
+  onDownvote(): void {
+    this.onVote(Vote.DOWNVOTE);
+  }
+  private onVote(voteAction: Vote): void {
+    if (!this.post) { return; }
+    const voteState = this.postService.getNewVoteState(this.vote, voteAction);
+    this.vote = voteState.newVote;
+    this.post.upvotes += voteState.upvoteDiff;
+    this.post.downvotes += voteState.downvoteDiff;
+    this.voteNumber = this.postService.getNumberOfUpvotes(this.post);
     this.postService.votePost(this.post, this.vote);
   }
   navigateToDetails() {

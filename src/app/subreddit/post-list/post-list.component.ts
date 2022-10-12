@@ -18,7 +18,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   private postSubscription?: Subscription;
   private loadAtPercent: number = 0.9;
   private static postsToLoadAfterScroll = 3;
-  loadedPosts = 3;
+  loadedPosts = 5;
   loadingBuffer?: NodeJS.Timeout = undefined;
   nothingLoaded = false;
 

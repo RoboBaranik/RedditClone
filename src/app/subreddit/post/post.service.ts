@@ -105,6 +105,28 @@ export class PostService {
       console.error('Not logged in.');
     }
   }
+  getNumberOfUpvotes(post: Post): string {
+    const count = post.upvotes - post.downvotes;
+    if (count === 0) {
+      return '0';
+    }
+    const absCount = Math.abs(count);
+    const divisors = [1_000_000_000, 1_000_000, 1_000, 1];
+    for (let divisor of divisors) {
+      if (absCount >= divisor) {
+        const str = this.numberToShortString(absCount, divisor, count > 0);
+        return str;
+      }
+    }
+    return 'Vote';
+  }
+  numberToShortString(num: number, divisor: number, isPositive: boolean): string {
+    const countDivided = num / divisor;
+    const substringLength = (100 > countDivided && countDivided >= 10) ? 4 : 3;
+    const numericPart = countDivided.toLocaleString('en-US').substring(0, substringLength);
+    return `${isPositive ? '' : '-'} ${numericPart}`;
+
+  }
   getVote(post: Post, user?: User): Vote | undefined {
     if (!user) {
       const currentUser = this.userService.user;
@@ -115,14 +137,18 @@ export class PostService {
     }
     return post.votes[user.id] ?? Vote.NOT_VOTED;
   }
-  getNewVoteState(oldVote: Vote, action: Vote): Vote {
+  getNewVoteState(oldVote: Vote, action: Vote): NewVoteState {
     if (action === Vote.NOT_VOTED) {
-      return oldVote;
+      return new NewVoteState(oldVote, oldVote, 0, 0);
     }
+    const isActionUpvote = action === Vote.UPVOTE;
     if (action === oldVote) {
-      return Vote.NOT_VOTED;
+      return new NewVoteState(Vote.NOT_VOTED, oldVote, isActionUpvote ? -1 : 0, isActionUpvote ? 0 : -1);
     }
-    return action;
+    if (oldVote === Vote.NOT_VOTED) {
+      return new NewVoteState(action, oldVote, isActionUpvote ? 1 : 0, isActionUpvote ? 0 : 1);
+    }
+    return new NewVoteState(action, oldVote, isActionUpvote ? 1 : -1, isActionUpvote ? -1 : 1);
   }
 
   // private updatePost(post: Post, f: (halo: Post) => void) {
@@ -134,4 +160,12 @@ export class PostService {
   //   });
   // }
 
+}
+export class NewVoteState {
+  constructor(
+    public newVote: Vote,
+    public oldVote: Vote,
+    public upvoteDiff: number,
+    public downvoteDiff: number
+  ) { }
 }
