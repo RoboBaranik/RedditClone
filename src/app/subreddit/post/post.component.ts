@@ -120,5 +120,16 @@ export class PostComponent implements OnInit, OnDestroy {
     }
     return Post.PLACEHOLDER_USERNAME;
   }
+  getTimeCreated(): string {
+    if (this.post) {
+      if (this.post.timeCreated) {
+        return this.post.timeCreated.toISOString();
+      }
+      if (this.post.timeCreatedString) {
+        return this.post.timeCreatedString;
+      }
+    }
+    return Post.PLACEHOLDER_TIME_CREATED;
+  }
 
 }

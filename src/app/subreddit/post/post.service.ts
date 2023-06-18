@@ -1,21 +1,26 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { BehaviorSubject, Subject } from "rxjs";
-import { User } from "src/app/auth/user";
-import { DatabaseService } from "src/app/shared/database.service";
-import { UserService } from "../../auth/user.service";
-import { Comment } from "../../post-detail/comment/comment";
-import { Subreddit } from "../subreddit";
-import { Post, Vote } from "./post";
-import { PostImage } from "./post-image";
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { User } from 'src/app/auth/user';
+import { DatabaseService } from 'src/app/shared/database.service';
+import { UserService } from '../../auth/user.service';
+import { Comment } from '../../post-detail/comment/comment';
+import { Subreddit } from '../subreddit';
+import { Post, Vote } from './post';
+import { PostImage } from './post-image';
 
 @Injectable({ providedIn: 'root' })
 export class PostService {
-
   postList: { [key: string]: Post } = {};
-  postListSub: BehaviorSubject<{ [key: string]: Post }> = new BehaviorSubject<{ [key: string]: Post }>({});
+  postListSub: BehaviorSubject<{ [key: string]: Post }> = new BehaviorSubject<{
+    [key: string]: Post;
+  }>({});
 
-  constructor(private userService: UserService, private dbService: DatabaseService, private http: HttpClient) {
+  constructor(
+    private userService: UserService,
+    private dbService: DatabaseService,
+    private http: HttpClient
+  ) {
     /*this.postList.push(
       new Post('r/Reddit', 'u/redditor', 'A nice title for a post', 'This is a description of a post. Should be clear enough. :)'),
       new Post('r/leagueoflegends', 'u/someone', 'Hmm, what is this?', '', { images: [new PostImage('https://i.redd.it/i43jvn2ymjj91.jpg', 'What')] }),
@@ -37,10 +42,16 @@ export class PostService {
     if (!this.userService.user) {
       throw new Error('Please log in!');
     }
-    var newPost = new Post(new Subreddit('Reddit'), this.userService.user, title, text, { images: images });
+    var newPost = new Post(
+      new Subreddit('Reddit'),
+      this.userService.user,
+      title,
+      text,
+      { images: images }
+    );
     this.dbService.createPost(newPost).subscribe({
-      next: post => console.log(post),
-      error: error => console.error(error)
+      next: (post) => console.log(post),
+      error: (error) => console.error(error),
     });
     // this.postList.push(newPost);
     // this.postListSub.next(this.postList);
@@ -54,11 +65,13 @@ export class PostService {
     // return this.postList.find(post => post.id === postId && post.titleUrl.localeCompare(postTitleUrl) === 0);
   }
   getPostAll(limit?: number): void {
-    this.dbService.getPostAll(limit).subscribe(posts => this.postListSub.next(posts));
+    this.dbService
+      .getPostAll(limit)
+      .subscribe((posts) => this.postListSub.next(posts));
   }
   editPost(updatedPost: Post) {
     // this.postList[id] = updatedPost;
-    this.dbService.updatePost(updatedPost).subscribe(post => {
+    this.dbService.updatePost(updatedPost).subscribe((post) => {
       if (post) {
         this.postList[post.getPrimaryKey()] = post;
         this.postListSub.next(this.postList);
@@ -68,9 +81,9 @@ export class PostService {
         //   this.postListSub.next(this.postList);
         // }
       } else {
-        console.log(`Post update failed. Post ${updatedPost.author}`)
+        console.log(`Post update failed. Post ${updatedPost.author}`);
       }
-    })
+    });
   }
   deletePost(post: Post) {
     delete this.postList[post.getPrimaryKey()];
@@ -79,7 +92,6 @@ export class PostService {
   }
 
   // Post updates
-
 
   addComment(post: Post, comment: Comment) {
     const user = this.userService.user;
@@ -91,19 +103,25 @@ export class PostService {
       console.error('Not logged in.');
     }
   }
-  votePost(post: Post, vote: Vote): void {
+  votePost(post: Post, vote: Vote): boolean {
     const user = this.userService.user;
-    if (user) {
-      const clone = Post.clone(post);
-      if (vote === Vote.NOT_VOTED) {
-        delete clone.votes[user.id];
-      } else {
-        clone.votes[user.id] = vote;
-      }
-      this.editPost(clone);
-    } else {
+    if (!user) {
       console.error('Not logged in.');
+      return false;
     }
+    // console.log(`Post: ${JSON.stringify(post)}`);
+
+    const clone = Post.clone(post);
+    // console.log(`Clone: ${JSON.stringify(clone)}`);
+    if (vote === Vote.NOT_VOTED) {
+      delete clone.votes[user.id];
+    } else {
+      clone.votes[user.id] = vote;
+    }
+    // console.log(`Clone2: ${JSON.stringify(clone)}`);
+    this.editPost(clone);
+    // console.log(`Clone3: ${JSON.stringify(clone)}`);
+    return true;
   }
   getNumberOfUpvotes(post: Post): string {
     const count = post.upvotes - post.downvotes;
@@ -120,12 +138,17 @@ export class PostService {
     }
     return 'Vote';
   }
-  numberToShortString(num: number, divisor: number, isPositive: boolean): string {
+  numberToShortString(
+    num: number,
+    divisor: number,
+    isPositive: boolean
+  ): string {
     const countDivided = num / divisor;
-    const substringLength = (100 > countDivided && countDivided >= 10) ? 4 : 3;
-    const numericPart = countDivided.toLocaleString('en-US').substring(0, substringLength);
+    const substringLength = 100 > countDivided && countDivided >= 10 ? 4 : 3;
+    const numericPart = countDivided
+      .toLocaleString('en-US')
+      .substring(0, substringLength);
     return `${isPositive ? '' : '-'} ${numericPart}`;
-
   }
   getVote(post: Post, user?: User): Vote | undefined {
     if (!user) {
@@ -143,12 +166,27 @@ export class PostService {
     }
     const isActionUpvote = action === Vote.UPVOTE;
     if (action === oldVote) {
-      return new NewVoteState(Vote.NOT_VOTED, oldVote, isActionUpvote ? -1 : 0, isActionUpvote ? 0 : -1);
+      return new NewVoteState(
+        Vote.NOT_VOTED,
+        oldVote,
+        isActionUpvote ? -1 : 0,
+        isActionUpvote ? 0 : -1
+      );
     }
     if (oldVote === Vote.NOT_VOTED) {
-      return new NewVoteState(action, oldVote, isActionUpvote ? 1 : 0, isActionUpvote ? 0 : 1);
+      return new NewVoteState(
+        action,
+        oldVote,
+        isActionUpvote ? 1 : 0,
+        isActionUpvote ? 0 : 1
+      );
     }
-    return new NewVoteState(action, oldVote, isActionUpvote ? 1 : -1, isActionUpvote ? -1 : 1);
+    return new NewVoteState(
+      action,
+      oldVote,
+      isActionUpvote ? 1 : -1,
+      isActionUpvote ? -1 : 1
+    );
   }
 
   // private updatePost(post: Post, f: (halo: Post) => void) {
@@ -159,7 +197,6 @@ export class PostService {
   //     }
   //   });
   // }
-
 }
 export class NewVoteState {
   constructor(
@@ -167,5 +204,5 @@ export class NewVoteState {
     public oldVote: Vote,
     public upvoteDiff: number,
     public downvoteDiff: number
-  ) { }
+  ) {}
 }

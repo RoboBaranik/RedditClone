@@ -1,4 +1,11 @@
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { User } from 'src/app/auth/user';
 import { UserService } from 'src/app/auth/user.service';
@@ -10,10 +17,9 @@ import { Comment } from '../comment/comment';
 @Component({
   selector: 'post-detail',
   templateUrl: './post-detail.component.html',
-  styleUrls: ['./post-detail.component.scss']
+  styleUrls: ['./post-detail.component.scss'],
 })
 export class PostDetailComponent implements OnInit, OnDestroy {
-
   post?: Post;
   vote: Vote = Vote.NOT_VOTED;
   voteTypes = Vote;
@@ -26,11 +32,11 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   constructor(
     private postService: PostService,
     private userService: UserService,
-    private route: ActivatedRoute,
-  ) { }
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
-    this.route.url.subscribe(url => {
+    this.route.url.subscribe((url) => {
       if (url.length < 4 || !url[2].path || !url[3].path) {
         console.error('Unexpected URL');
         return;
@@ -50,7 +56,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     }
   }
   refreshPost(postId: string, titleUrl: string): void {
-    const sub = this.postService.getPost(postId, titleUrl).subscribe(post => {
+    const sub = this.postService.getPost(postId, titleUrl).subscribe((post) => {
       if (post) {
         // if (!post.comments) {
         //   post.comments = [];
@@ -62,7 +68,13 @@ export class PostDetailComponent implements OnInit, OnDestroy {
         if (vote) {
           this.vote = vote;
         }
-        var commentTexts = ['Test of the comments', 'Ahh, I see...', 'I did nazi that', 'Spanish inquisition', `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus vehicula venenatis erat, rutrum consequat dolor bibendum et. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce interdum erat at odio bibendum fringilla. Mauris suscipit lacinia turpis, sit amet porttitor felis semper sed. Cras fringilla vulputate ultrices. Cras ac viverra mauris. Donec a tincidunt nulla, vel mattis enim.`];
+        var commentTexts = [
+          'Test of the comments',
+          'Ahh, I see...',
+          'I did nazi that',
+          'Spanish inquisition',
+          `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus vehicula venenatis erat, rutrum consequat dolor bibendum et. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce interdum erat at odio bibendum fringilla. Mauris suscipit lacinia turpis, sit amet porttitor felis semper sed. Cras fringilla vulputate ultrices. Cras ac viverra mauris. Donec a tincidunt nulla, vel mattis enim.`,
+        ];
         // this.mockComments(this.post, commentTexts);
         // this.postService.addComment(this.post, new Comment(this.post, new User('u/commenternumber1', 'abc', '', 0), 'Test of the comments'));
       }
@@ -76,13 +88,20 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     this.onVote(Vote.DOWNVOTE);
   }
   private onVote(voteAction: Vote): void {
-    if (!this.post) { return; }
+    if (!this.post) {
+      return;
+    }
     const voteState = this.postService.getNewVoteState(this.vote, voteAction);
-    this.vote = voteState.newVote;
-    this.post.upvotes += voteState.upvoteDiff;
-    this.post.downvotes += voteState.downvoteDiff;
-    this.voteNumber = this.postService.getNumberOfUpvotes(this.post);
-    this.postService.votePost(this.post, this.vote);
+    const clone = Post.clone(this.post);
+    const vote = voteState.newVote;
+    clone.upvotes += voteState.upvoteDiff;
+    clone.downvotes += voteState.downvoteDiff;
+    const success = this.postService.votePost(clone, vote);
+    if (success) {
+      this.post = clone;
+      this.vote = vote;
+      this.voteNumber = this.postService.getNumberOfUpvotes(clone);
+    }
   }
 
   // mockComments(post: Post, commentTexts: string[]): void {
@@ -132,5 +151,4 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     }
     return Post.PLACEHOLDER_TIME_CREATED;
   }
-
 }

@@ -32,7 +32,7 @@
     </div>
     <div *ngIf="!!post && post.images && post.images.length > 0">
       <img class="post-image" [src]="post.images[0].url" [alt]="post.images[0].title">
-      <div class="post-image-title">{{post.images[0].title}}</div>
+      <div class="post-image-title" *ngIf="!!post.images[0].title">{{post.images[0].title}}</div>
     </div>
   </div>
   <div class="comments">

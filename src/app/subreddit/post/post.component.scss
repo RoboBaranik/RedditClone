@@ -1,7 +1,7 @@
 @import 'src/assets/theme.scss';
 
 .post {
-  --post-max-height: 150px;
+  --post-max-height: 200px;
 
   margin-bottom: 15px;
   border-radius: var(--border-radius);
@@ -14,7 +14,7 @@
   position: relative;
 }
 
-.post {
+.post .content {
   cursor: pointer;
 }
 

@@ -26,15 +26,28 @@ import { UserService } from './auth/user.service';
 import { PostCreateSimpleComponent } from './submit/post-create-simple/post-create-simple.component';
 import { PostCreateComponent } from './submit/post-create/post-create.component';
 import { SubmitLayoutComponent } from './submit/submit-layout/submit-layout.component';
-import { CUSTOM_UPDATE_INTERVAL_GENERATOR, TimePastPipe, UpdateIntervalGenerator } from 'ng-time-past-pipe';
+import {
+  CUSTOM_UPDATE_INTERVAL_GENERATOR,
+  TimePastPipe,
+  UpdateIntervalGenerator,
+} from 'ng-time-past-pipe';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { environment } from 'src/environments/environment';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import {
+  provideFirestore,
+  getFirestore,
+  connectFirestoreEmulator,
+  enableIndexedDbPersistence,
+} from '@angular/fire/firestore';
+import { provideStorage, getStorage } from '@angular/fire/storage';
 
 const updateIntervalGenerator: UpdateIntervalGenerator = (diff): number => {
   if (diff.seconds < 60) {
     return 10;
   }
   return 60;
-}
+};
 
 @NgModule({
   declarations: [
@@ -53,9 +66,17 @@ const updateIntervalGenerator: UpdateIntervalGenerator = (diff): number => {
     CommentComponent,
     AuthComponent,
     PostCreateSimpleComponent,
-    SubmitLayoutComponent
+    SubmitLayoutComponent,
   ],
   imports: [
+    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+    // provideFirestore(() => {
+    //     const firestore = getFirestore();
+    //     connectFirestoreEmulator(firestore, 'localhost', 8080);
+    //     enableIndexedDbPersistence(firestore);
+    //     return firestore;
+    // }),
+    // provideStorage(() => getStorage()),
     BrowserModule,
     ReactiveFormsModule,
     AppRoutingModule,
@@ -66,21 +87,23 @@ const updateIntervalGenerator: UpdateIntervalGenerator = (diff): number => {
     MatIconModule,
     HttpClientModule,
     TimePastPipe,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
   providers: [
     {
       provide: APP_INITIALIZER,
-      useFactory: (userService: UserService) => () => { return userService.autoLogIn(); },
+      useFactory: (userService: UserService) => () => {
+        return userService.autoLogIn();
+      },
       deps: [UserService],
-      multi: true
+      multi: true,
     },
     {
       provide: CUSTOM_UPDATE_INTERVAL_GENERATOR,
       useValue: updateIntervalGenerator,
       // multi: true
-    }
+    },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
